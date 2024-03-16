@@ -1,2 +1,2 @@
-# smfl-game
+# sfml-game
  
