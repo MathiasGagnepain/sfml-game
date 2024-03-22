@@ -1,5 +1,11 @@
 #include <SFML/Graphics.hpp>
 
+// standard
+#include <iostream>
+
+// custom
+#include "class/character.cc"
+
 int main()
 {
     sf::RenderWindow window(sf::VideoMode(1200, 700), "SFML works!");
