@@ -32,6 +32,9 @@ target_include_directories(game
     "${CMAKE_CURRENT_SOURCE_DIR}/src/class"
 )
 
+# file(CREATE_LINK "${PROJECT_SOURCE_DIR}/src/assets"
+#         "${CMAKE_CURRENT_BINARY_DIR}/src/assets" SYMBOLIC)
+
 target_link_libraries(game
   PRIVATE
     Threads::Threads
