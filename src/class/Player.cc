@@ -62,6 +62,7 @@ class Player: public Character
         * TODO: Implement crouching
         */
         void crouch(){
+            this->isJumping = false;
             this->yPosition += 2;
         }
 

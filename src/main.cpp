@@ -25,7 +25,7 @@ int main()
     sf::RenderWindow window(sf::VideoMode(SCREEN_WIDTH, SCREEN_HEIGHT), "Stickman Exploration", sf::Style::Close | sf::Style::Titlebar);
 
     auto image = sf::Image{};
-    if (!image.loadFromFile("../documents/img/platform.png"))
+    if (!image.loadFromFile("../src/assets/stickman_exploration_logo.png"))
     {
         printf("Error loading icon image\n");
     }
@@ -93,7 +93,6 @@ int main()
                     player.jump();
                 }
                 if((sf::Keyboard::isKeyPressed(sf::Keyboard::Down) || sf::Keyboard::isKeyPressed(sf::Keyboard::S)) && player.yPosition < ground.getPosition().y - 20){
-                    player.isJumping = false;
                     player.crouch();
                 }
             }
