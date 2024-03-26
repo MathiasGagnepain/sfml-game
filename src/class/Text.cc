@@ -16,7 +16,7 @@ class Text
             this->gameoverText.setString("Game Over - Press Space to Restart");
             this->gameoverText.setCharacterSize(50);
             this->gameoverText.setFillColor(sf::Color::Red);
-            this->gameoverText.setPosition(400, 300);
+            this->gameoverText.setPosition(325, 300);
             this->gameoverText.setStyle(sf::Text::Underlined);
         }
 
@@ -25,7 +25,7 @@ class Text
             this->startingText.setString("Press Space to Start");
             this->startingText.setCharacterSize(50);
             this->startingText.setFillColor(sf::Color::Black);
-            this->startingText.setPosition(400, 300);
+            this->startingText.setPosition(325, 300);
             this->startingText.setStyle(sf::Text::Underlined);
         }
 
@@ -34,7 +34,7 @@ class Text
             this->pauseText.setString("Paused - Press P to Resume");
             this->pauseText.setCharacterSize(50);
             this->pauseText.setFillColor(sf::Color::Black);
-            this->pauseText.setPosition(400, 300);
+            this->pauseText.setPosition(325, 300);
             this->pauseText.setStyle(sf::Text::Underlined);
         }
     
