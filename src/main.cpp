@@ -17,8 +17,6 @@ using namespace std;
 
 #include "includes/main.h"
 
-// TODO: Block the player from being affected by gravity when he is jumping.
-// TODO: Fix jumpcooldown
 
 int main()
 {
@@ -72,19 +70,13 @@ int main()
     playerSprite.setFillColor(sf::Color::Red);
 
     Player player;
-    player.xPosition = 20;
-    player.yPosition = 200;
-    player.inventory[0] = 0;
-    player.inventory[1] = 0;
-    player.name = "Sticky";
-    player.healthPoints = 100;
-    player.baseDamage = 2;
+
 
     bool gameIsStarted = false;
     bool gameIsPaused = false;
 
-    sf::Clock pauseClock, jumpClock;
-    sf::Time pauseCooldown, jumpCooldown;
+    sf::Clock pauseClock;
+    sf::Time pauseCooldown;
 
     while (window.isOpen())
     {   
@@ -107,25 +99,26 @@ int main()
             }
             
             if(!gameIsPaused){
-                if(sf::Keyboard::isKeyPressed(sf::Keyboard::Right)){
-                    player.xPosition += 0.2;
-                } else if(sf::Keyboard::isKeyPressed(sf::Keyboard::Left)){
-                    player.xPosition -= 0.2;
-                } else if(sf::Keyboard::isKeyPressed(sf::Keyboard::Up) && player.yPosition >= ground.getPosition().y - 20){
-                    player.yPosition -= 2;
-                } else if(sf::Keyboard::isKeyPressed(sf::Keyboard::Down) && player.yPosition < ground.getPosition().y - 20){
-                    player.yPosition += 2;
+                if(sf::Keyboard::isKeyPressed(sf::Keyboard::Right) || sf::Keyboard::isKeyPressed(sf::Keyboard::D)){
+                    player.moveRight();
+                }
+                if(sf::Keyboard::isKeyPressed(sf::Keyboard::Left) || sf::Keyboard::isKeyPressed(sf::Keyboard::A)){
+                    player.moveLeft();
+                }
+                if((sf::Keyboard::isKeyPressed(sf::Keyboard::Up) || sf::Keyboard::isKeyPressed(sf::Keyboard::Z)) && !player.isJumping && player.getJumpCooldown().asSeconds() >= .5f){
+                    player.jump();
+                }
+                if((sf::Keyboard::isKeyPressed(sf::Keyboard::Down) || sf::Keyboard::isKeyPressed(sf::Keyboard::S)) && player.yPosition < ground.getPosition().y - 20){
+                    player.isJumping = false;
+                    player.crouch();
                 }
             }
         }
 
         window.clear();
-
-        if(playerSprite.getPosition().y < ground.getPosition().y - 20 && jumpCooldown.asSeconds() <= .5f){
-            jumpClock.restart();
-            player.yPosition += 1;
-        }
         
+        player.physics(ground, playerSprite);
+
         playerSprite.setPosition(player.xPosition, player.yPosition);
 
         window.draw(background);
@@ -143,7 +136,6 @@ int main()
         window.display();
 
         pauseCooldown = pauseClock.getElapsedTime();
-        jumpCooldown = jumpClock.getElapsedTime();
     }
 
     return 0;
