@@ -10,6 +10,7 @@ using namespace std;
 
 #include "class/Character.cc"
 #include "class/Player.cc"
+#include "class/Text.cc"
 // #include "class/Enemy.cc"
 // #include "class/Item.cc"
 // #include "class/Collectable.cc"
@@ -20,7 +21,15 @@ using namespace std;
 
 int main()
 {
-    sf::RenderWindow window(sf::VideoMode(SCREEN_WIDTH, SCREEN_HEIGHT), "Stickman Exploration");
+    
+    sf::RenderWindow window(sf::VideoMode(SCREEN_WIDTH, SCREEN_HEIGHT), "Stickman Exploration", sf::Style::Close | sf::Style::Titlebar);
+
+    auto image = sf::Image{};
+    if (!image.loadFromFile("../documents/img/platform.png"))
+    {
+        printf("Error loading icon image\n");
+    }
+    window.setIcon(image.getSize().x, image.getSize().y, image.getPixelsPtr());
 
     // Background
     sf::Texture backgroundTexture;
@@ -36,40 +45,14 @@ int main()
     ground.setTexture(groundTexture);
     ground.setScale(2.0f,1.0f);
     ground.setPosition(0.0f, 600.0f);
-
-    // Text
-    sf::Text text;
-    sf::Font font;
-    font.loadFromFile("../src/assets/fonts/DrawingBlood.ttf");
-    text.setFont(font);
-    text.setString("Press Space to Start");
-    text.setCharacterSize(50);
-    text.setFillColor(sf::Color::Black);
-    text.setPosition(400, 300);
-    text.setStyle(sf::Text::Underlined);
-
-    sf::Text text2;
-    text2.setFont(font);
-    text2.setString("Paused - Press P to Resume");
-    text2.setCharacterSize(50);
-    text2.setFillColor(sf::Color::Black);
-    text2.setPosition(400, 300);
-    text2.setStyle(sf::Text::Underlined);
-
-    sf::Text gameoverText;
-    gameoverText.setFont(font);
-    gameoverText.setString("Game Over - Press Space to Restart");
-    gameoverText.setCharacterSize(50);
-    gameoverText.setFillColor(sf::Color::Red);
-    gameoverText.setPosition(400, 300);
-    gameoverText.setStyle(sf::Text::Underlined);
     
 
     // Player
     sf::RectangleShape playerSprite(sf::Vector2f(75.0f, 100.0f));
     playerSprite.setFillColor(sf::Color::Red);
 
-    Player player;
+    Player player("Sticky");
+    Text text;
 
 
     bool gameIsStarted = false;
@@ -88,6 +71,7 @@ int main()
         }
 
 
+        // Keyboard Events
         if(!gameIsStarted){
             if(sf::Keyboard::isKeyPressed(sf::Keyboard::Space)){
                 gameIsStarted = true;
@@ -124,14 +108,16 @@ int main()
         window.draw(background);
         window.draw(ground);
         window.draw(playerSprite);
+
+        // Text
         if(!gameIsStarted){
-            window.draw(text);
+            window.draw(text.getStartingText());
         }
         if(gameIsPaused){
-            window.draw(text2);
+           window.draw(text.getPausedText());
         }
         if(player.healthPoints <= 0){
-            window.draw(gameoverText);
+            window.draw(text.getGameOverText());
         }
         window.display();
 
