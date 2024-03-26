@@ -18,10 +18,8 @@ using namespace std;
 
 #include "includes/main.h"
 
-
 int main()
 {
-    
     sf::RenderWindow window(sf::VideoMode(SCREEN_WIDTH, SCREEN_HEIGHT), "Stickman Exploration", sf::Style::Close | sf::Style::Titlebar);
 
     auto image = sf::Image{};
@@ -33,27 +31,35 @@ int main()
 
     // Background
     sf::Texture backgroundTexture;
-    backgroundTexture.loadFromFile("../src/assets/background.png");
     sf::Sprite background;
+
+    backgroundTexture.loadFromFile("../src/assets/background.png");
     background.setTexture(backgroundTexture);
     background.setScale(2.0f,2.0f);
 
     // Ground
     sf::Texture groundTexture;
-    groundTexture.loadFromFile("../src/assets/ground.png");
     sf::Sprite ground;
+
+    groundTexture.loadFromFile("../src/assets/ground.png");
     ground.setTexture(groundTexture);
     ground.setScale(2.0f,1.0f);
     ground.setPosition(0.0f, 600.0f);
-    
 
+    // Platform
+    sf::Texture platformTexture;
+    sf::Sprite platform;
+    platformTexture.loadFromFile("../src/assets/platform.png");
+    platform.setTexture(platformTexture);
+    platform.setScale(1.0f, .75f);
+    platform.setPosition(700.0f, 480.0f);
+    
     // Player
     sf::RectangleShape playerSprite(sf::Vector2f(75.0f, 100.0f));
     playerSprite.setFillColor(sf::Color::Red);
 
     Player player("Sticky");
     Text text;
-
 
     bool gameIsStarted = false;
     bool gameIsPaused = false;
@@ -69,7 +75,6 @@ int main()
             if (event.type == sf::Event::Closed)
                 window.close();
         }
-
 
         // Keyboard Events
         if(!gameIsStarted){
@@ -100,12 +105,14 @@ int main()
 
         window.clear();
         
-        player.physics(ground, playerSprite);
+        player.physics(ground, playerSprite, platform);
 
         playerSprite.setPosition(player.xPosition, player.yPosition);
 
         window.draw(background);
         window.draw(ground);
+        window.draw(platform);
+
         window.draw(playerSprite);
 
         // Text

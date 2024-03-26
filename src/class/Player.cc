@@ -72,9 +72,9 @@ class Player: public Character
         * @param playerSprite: the player sprite
         * @return void
         */
-        void physics(sf::Sprite ground, sf::RectangleShape playerSprite){
+        void physics(sf::Sprite ground, sf::RectangleShape playerSprite, sf::Sprite platform){
             jumping();
-            gravity(ground, playerSprite);
+            gravity(ground, playerSprite, platform);
         }
 
         /*
@@ -87,7 +87,7 @@ class Player: public Character
         }
 
     private:
-        int jumpHeight = 200;
+        int jumpHeight = 250;
 
         /*
         * This function is responsible for the gravity of the player
@@ -95,8 +95,11 @@ class Player: public Character
         * @param playerSprite: the player sprite
         * @return void
         */
-        void gravity(sf::Sprite ground, sf::RectangleShape playerSprite){
-                if(playerSprite.getPosition().y < ground.getPosition().y - 20 && !this->isJumping){
+        void gravity(sf::Sprite ground, sf::RectangleShape playerSprite, sf::Sprite platform){
+            sf::FloatRect playerBounds = playerSprite.getGlobalBounds();
+            sf::FloatRect platformBounds = platform.getGlobalBounds();
+
+            if(playerSprite.getPosition().y < ground.getPosition().y - 20 && !this->isJumping && !playerBounds.intersects(platformBounds)){
                 this->yPosition += 1;
             }
         }
