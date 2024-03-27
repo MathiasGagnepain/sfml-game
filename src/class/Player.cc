@@ -17,6 +17,7 @@ class Player: public Character
 
         int healthPoints = 100;
         float baseDamage = 2;
+        bool levelEnded = false;
 
         sf::Clock jumpClock;
         sf::Time jumpCooldown;
@@ -72,9 +73,10 @@ class Player: public Character
         * @param playerSprite: the player sprite
         * @return void
         */
-        void physics(sf::Sprite ground, sf::RectangleShape playerSprite, sf::Sprite platform){
+        void physics(sf::Sprite ground, sf::RectangleShape playerSprite, Platform platform, sf::Sprite levelEnd){
             jumping();
             gravity(ground, playerSprite, platform);
+            this->levelEnded = checkEnd(levelEnd, playerSprite);
         }
 
         /*
@@ -89,13 +91,23 @@ class Player: public Character
     private:
         int jumpHeight = 250;
 
+
+        bool checkEnd(sf::Sprite levelEnd, sf::RectangleShape playerSprite){
+            sf::FloatRect playerBounds = playerSprite.getGlobalBounds();
+            sf::FloatRect levelEndBounds = levelEnd.getGlobalBounds();
+
+            if(playerBounds.intersects(levelEndBounds)){
+                return true;
+            }
+            return false;
+        }
         /*
         * This function is responsible for the gravity of the player
         * @param ground: the ground sprite
         * @param playerSprite: the player sprite
         * @return void
         */
-        void gravity(sf::Sprite ground, sf::RectangleShape playerSprite, sf::Sprite platform){
+        void gravity(sf::Sprite ground, sf::RectangleShape playerSprite, Platform platform){
             sf::FloatRect playerBounds = playerSprite.getGlobalBounds();
             sf::FloatRect platformBounds = platform.getGlobalBounds();
 

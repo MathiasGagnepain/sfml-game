@@ -8,6 +8,7 @@ class Text
         sf::Text startingText;
         sf::Text pauseText;
         sf::Text gameoverText;
+        sf::Text gameEndedText;
 
         sf::Font font;
 
@@ -38,6 +39,15 @@ class Text
             this->pauseText.setStyle(sf::Text::Underlined);
         }
     
+        void loadGameEndedText(){
+            this->gameEndedText.setFont(this->font);
+            this->gameEndedText.setString("You have completed the level");
+            this->gameEndedText.setCharacterSize(50);
+            this->gameEndedText.setFillColor(sf::Color::Black);
+            this->gameEndedText.setPosition(325, 300);
+            this->gameEndedText.setStyle(sf::Text::Underlined);
+        }
+
     public:
 
         Text(){
@@ -45,6 +55,7 @@ class Text
             loadStartingText();
             loadPausedText();
             loadGameOverText();
+            loadGameEndedText();
         }
 
         sf::Text getGameOverText(){
@@ -57,5 +68,9 @@ class Text
 
         sf::Text getPausedText(){
             return this->pauseText;
+        }
+
+        sf::Text getGameEndedText(){
+            return this->gameEndedText;
         }
 };

@@ -8,6 +8,8 @@ using namespace std;
 
 // custom
 
+#include "includes/path.h"
+#include "class/Platform.cc"
 #include "class/Character.cc"
 #include "class/Player.cc"
 #include "class/Text.cc"
@@ -46,13 +48,18 @@ int main()
     ground.setScale(2.0f,1.0f);
     ground.setPosition(0.0f, 600.0f);
 
+    // Level End
+    sf::Texture levelEndTexture;
+    sf::Sprite levelEnd;
+    levelEndTexture.loadFromFile("../src/assets/end.png");
+    levelEnd.setTexture(levelEndTexture);
+    levelEnd.setScale(.2f,.2f);
+    levelEnd.setPosition(1100.0f, 570.0f);
+
+
+
     // Platform
-    sf::Texture platformTexture;
-    sf::Sprite platform;
-    platformTexture.loadFromFile("../src/assets/platform.png");
-    platform.setTexture(platformTexture);
-    platform.setScale(1.0f, .75f);
-    platform.setPosition(700.0f, 480.0f);
+    Platform platform("../src/assets/platform.png", 700.0f, 480.0f, 1.0f, .75f);
     
     // Player
     sf::RectangleShape playerSprite(sf::Vector2f(75.0f, 100.0f));
@@ -105,13 +112,14 @@ int main()
 
         window.clear();
         
-        player.physics(ground, playerSprite, platform);
+        player.physics(ground, playerSprite, platform, levelEnd);
 
         playerSprite.setPosition(player.xPosition, player.yPosition);
 
         window.draw(background);
         window.draw(ground);
-        window.draw(platform);
+        window.draw(platform.getPlatform());
+        window.draw(levelEnd);
 
         window.draw(playerSprite);
 
@@ -125,6 +133,16 @@ int main()
         if(player.healthPoints <= 0){
             window.draw(text.getGameOverText());
         }
+
+        if(player.levelEnded){
+            window.draw(text.getGameEndedText());
+            sf::sleep(sf::seconds(10));
+            gameIsStarted = false;
+            player.levelEnded = false;
+            player.xPosition = 0;
+            player.yPosition = 0;
+        }
+
         window.display();
 
         pauseCooldown = pauseClock.getElapsedTime();
