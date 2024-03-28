@@ -26,6 +26,13 @@ class Player: public Character
             this->name = name;
         }
 
+        void resetPosition(){
+            this->xPosition = 20;
+            this->yPosition = 400;
+            this->xVelocity = 0;
+            this->yVelocity = 0;
+        }
+
 
         /*
         * This function is responsible for the movement of the player to the right
@@ -33,7 +40,7 @@ class Player: public Character
         * @return void
         */
         void moveRight(){
-            this->xPosition += 0.2;
+            this->xVelocity = 0.2;
         }
 
         /*
@@ -42,7 +49,7 @@ class Player: public Character
         * @return void
         */
         void moveLeft(){
-            this->xPosition -= 0.2;
+            this->xVelocity = -0.2;
         }
 
         /*
@@ -53,7 +60,7 @@ class Player: public Character
         void jump(){
             this->isJumping = true;
             this->originalPlayerPosition = this->yPosition;
-            this->yVelocity = -0.5;
+            this->yVelocity = -1;
         }
 
         /*
@@ -74,6 +81,7 @@ class Player: public Character
         * @return void
         */
         void physics(sf::Sprite ground, sf::RectangleShape playerSprite, Platform platform, sf::Sprite levelEnd){
+            this->xPosition += this->xVelocity;
             jumping();
             gravity(ground, playerSprite, platform);
             this->levelEnded = checkEnd(levelEnd, playerSprite);
@@ -97,6 +105,8 @@ class Player: public Character
             sf::FloatRect levelEndBounds = levelEnd.getGlobalBounds();
 
             if(playerBounds.intersects(levelEndBounds)){
+                this->xVelocity = 0;
+                this->yVelocity = 0;
                 return true;
             }
             return false;

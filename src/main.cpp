@@ -84,11 +84,17 @@ int main()
         }
 
         // Keyboard Events
-        if(!gameIsStarted){
-            if(sf::Keyboard::isKeyPressed(sf::Keyboard::Space)){
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::Space)){ 
+            if(!gameIsStarted){
                 gameIsStarted = true;
             }
-        } else{
+            else if (player.levelEnded){
+                gameIsStarted = false;
+                player.levelEnded = false;
+                player.resetPosition();
+            }
+        }
+        if (gameIsStarted && !player.levelEnded && player.healthPoints > 0) {
             if(sf::Keyboard::isKeyPressed(sf::Keyboard::P) && pauseCooldown.asSeconds() >= .5f){
                 pauseClock.restart();
                 gameIsPaused = !gameIsPaused;
@@ -126,6 +132,8 @@ int main()
         // Text
         if(!gameIsStarted){
             window.draw(text.getStartingText());
+        } else if (player.levelEnded) {
+            window.draw(text.getGameEndedText());
         }
         if(gameIsPaused){
            window.draw(text.getPausedText());
@@ -133,16 +141,7 @@ int main()
         if(player.healthPoints <= 0){
             window.draw(text.getGameOverText());
         }
-
-        if(player.levelEnded){
-            window.draw(text.getGameEndedText());
-            sf::sleep(sf::seconds(10));
-            gameIsStarted = false;
-            player.levelEnded = false;
-            player.xPosition = 0;
-            player.yPosition = 0;
-        }
-
+        
         window.display();
 
         pauseCooldown = pauseClock.getElapsedTime();
