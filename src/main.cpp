@@ -25,6 +25,7 @@ using namespace std;
 int main()
 {
     sf::RenderWindow window(sf::VideoMode(SCREEN_WIDTH, SCREEN_HEIGHT), "Stickman Exploration", sf::Style::Close | sf::Style::Titlebar);
+    window.setFramerateLimit(60);
 
     auto image = sf::Image{};
     if (!image.loadFromFile("../src/assets/stickman_exploration_logo.png"))
@@ -60,10 +61,6 @@ int main()
 
     // Platform
     Platform platform("../src/assets/platform.png", 700.0f, 480.0f, 1.0f, .75f);
-    
-    // Player
-    sf::RectangleShape playerSprite(sf::Vector2f(75.0f, 100.0f));
-    playerSprite.setFillColor(sf::Color::Red);
 
     Player player("Sticky");
     Text text;
@@ -113,16 +110,14 @@ int main()
                     player.jump();
                 }
                 if((sf::Keyboard::isKeyPressed(sf::Keyboard::Down) || sf::Keyboard::isKeyPressed(sf::Keyboard::S)) && player.yPosition < ground.getPosition().y - 20){
-                    player.crouch();
+                    player.crouch(ground);
                 }
             }
         }
 
         window.clear();
         
-        player.physics(ground, playerSprite, platform, levelEnd);
-
-        playerSprite.setPosition(player.xPosition, player.yPosition);
+        player.physics(ground, platform, levelEnd);
 
         window.draw(background);
         window.draw(ground);
@@ -133,9 +128,9 @@ int main()
 
         player.drawHealthBar(window);
 
-        window.draw(playerSprite);
+        player.drawPlayer(window);
 
-        collectable.drawCollectable(1, 100, 100, window);
+        collectable.drawCollectable(1, 100, 100, window, player);
 
         // Text
         if(!gameIsStarted){

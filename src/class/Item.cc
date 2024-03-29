@@ -4,7 +4,7 @@
 using namespace std;
 
 
-class Character
+class Item
 {
     public:
         char* name;

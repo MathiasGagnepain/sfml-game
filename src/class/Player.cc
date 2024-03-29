@@ -8,7 +8,7 @@ class Player: public Character
     public:
         int inventory[2];
         float xPosition = 20;
-        float yPosition = 400;
+        float yPosition = 0;
         float xVelocity = 0;
         float yVelocity = 0;
         bool isJumping = false;
@@ -21,8 +21,10 @@ class Player: public Character
         sf::Clock jumpClock;
         sf::Time jumpCooldown;
 
-        sf::Texture healthBarTexture;
-        sf::Sprite healthBar, healthBarBackground;
+        sf::Texture healthBarTexture, playerTexture;
+        sf::Sprite healthBar, healthBarBackground, playerSprite;
+
+        // sf::Vector2f(75.0f, 100.0f)
 
         Player(string name){
             this->name = name;
@@ -31,6 +33,11 @@ class Player: public Character
             this->healthBarTexture.loadFromFile("../src/assets/healthbar.png");
             this->healthBar.setTexture(healthBarTexture);
             this->healthBarBackground.setTexture(healthBarTexture);
+
+            // Player
+            this->playerTexture.loadFromFile("../src/assets/stickman.png");
+            this->playerSprite.setTexture(playerTexture);
+            this->playerSprite.setScale(sf::Vector2f(0.2f, 0.2f));
         }
 
         void resetPosition(){
@@ -47,7 +54,7 @@ class Player: public Character
         * @return void
         */
         void moveRight(){
-            this->xVelocity = 0.2;
+            this->xVelocity = 5;
         }
 
         /*
@@ -56,7 +63,7 @@ class Player: public Character
         * @return void
         */
         void moveLeft(){
-            this->xVelocity = -0.2;
+            this->xVelocity = -5;
         }
 
         /*
@@ -67,7 +74,7 @@ class Player: public Character
         void jump(){
             this->isJumping = true;
             this->originalPlayerPosition = this->yPosition;
-            this->yVelocity = -1;
+            this->yVelocity = -10;
         }
 
         /*
@@ -76,22 +83,26 @@ class Player: public Character
         * @return void
         * TODO: Implement crouching
         */
-        void crouch(){
+        void crouch(sf::Sprite ground){
             this->isJumping = false;
-            this->yPosition += 2;
+
+            float playerHeight = playerSprite.getTexture()->getSize().y * this->playerSprite.getScale().y;
+
+            if (this->playerSprite.getPosition().y + playerHeight/4 < ground.getPosition().y - 20) {
+                this->yPosition += 10;
+            }
         }
 
         /*
         * This function is responsible for the physics of the player
         * @param ground: the ground sprite
-        * @param playerSprite: the player sprite
         * @return void
         */
-        void physics(sf::Sprite ground, sf::RectangleShape playerSprite, Platform platform, sf::Sprite levelEnd){
+        void physics(sf::Sprite ground, Platform platform, sf::Sprite levelEnd){
             this->xPosition += this->xVelocity;
             jumping();
-            gravity(ground, playerSprite, platform);
-            this->levelEnded = checkEnd(levelEnd, playerSprite);
+            gravity(ground, platform);
+            this->levelEnded = checkEnd(levelEnd);
         }
 
         /*
@@ -124,6 +135,19 @@ class Player: public Character
             window.draw(healthBar);
         }
 
+        sf::FloatRect getGlobalBounds(){
+            return this->playerSprite.getGlobalBounds();
+        }
+
+        void updatePlayerPosition(){
+            this->playerSprite.setPosition(this->xPosition, this->yPosition);
+        }
+
+        void drawPlayer(sf::RenderWindow &window){
+            this->playerSprite.setPosition(this->xPosition, this->yPosition);
+            window.draw(this->playerSprite);
+        }
+
     private:
         int jumpHeight = 250;
         int score = 0;
@@ -131,8 +155,8 @@ class Player: public Character
         int maxHealth = 100;
 
 
-        bool checkEnd(sf::Sprite levelEnd, sf::RectangleShape playerSprite){
-            sf::FloatRect playerBounds = playerSprite.getGlobalBounds();
+        bool checkEnd(sf::Sprite levelEnd){
+            sf::FloatRect playerBounds = this->playerSprite.getGlobalBounds();
             sf::FloatRect levelEndBounds = levelEnd.getGlobalBounds();
 
             if(playerBounds.intersects(levelEndBounds)){
@@ -145,15 +169,16 @@ class Player: public Character
         /*
         * This function is responsible for the gravity of the player
         * @param ground: the ground sprite
-        * @param playerSprite: the player sprite
         * @return void
         */
-        void gravity(sf::Sprite ground, sf::RectangleShape playerSprite, Platform platform){
-            sf::FloatRect playerBounds = playerSprite.getGlobalBounds();
+        void gravity(sf::Sprite ground, Platform platform){
+            sf::FloatRect playerBounds = this->playerSprite.getGlobalBounds();
             sf::FloatRect platformBounds = platform.getGlobalBounds();
 
-            if(playerSprite.getPosition().y < ground.getPosition().y - 20 && !this->isJumping && !playerBounds.intersects(platformBounds)){
-                this->yPosition += 1;
+            float playerHeight = this->playerSprite.getTexture()->getSize().y * this->playerSprite.getScale().y;
+
+            if(this->playerSprite.getPosition().y + playerHeight/4 < ground.getPosition().y - 20 && !this->isJumping && (!playerBounds.intersects(platformBounds) || platformBounds.contains(playerSprite.getPosition().x, playerSprite.getPosition().y + playerBounds.height-10) )){
+                this->yPosition += 10;
             }
         }
 

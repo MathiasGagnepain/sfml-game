@@ -42,7 +42,7 @@ class Text
     
         void loadGameEndedText(){
             this->gameEndedText.setFont(this->font);
-            this->gameEndedText.setString("You have completed the level\nPress Space to Restart");
+            this->gameEndedText.setString("Level completed\nPress Space to Restart");
             this->gameEndedText.setCharacterSize(50);
             this->gameEndedText.setFillColor(sf::Color::Black);
             this->gameEndedText.setPosition(325, 300);

@@ -24,8 +24,4 @@ class Platform
         sf::Sprite getPlatform(){
             return this->platform;
         }
-        // platformTexture.loadFromFile("../src/assets/platform.png");
-        // platform.setTexture(platformTexture);
-        // platform.setScale(1.0f, .75f);
-        // platform.setPosition(700.0f, 480.0f);
 };
