@@ -21,8 +21,16 @@ class Player: public Character
         sf::Clock jumpClock;
         sf::Time jumpCooldown;
 
+        sf::Texture healthBarTexture;
+        sf::Sprite healthBar, healthBarBackground;
+
         Player(string name){
             this->name = name;
+
+            
+            this->healthBarTexture.loadFromFile("../src/assets/healthbar.png");
+            this->healthBar.setTexture(healthBarTexture);
+            this->healthBarBackground.setTexture(healthBarTexture);
         }
 
         void resetPosition(){
@@ -103,9 +111,25 @@ class Player: public Character
             this->score = score;
         }
 
+        sf::Sprite drawHealthBar(int type){
+            if (type == 0){
+                this->healthBarBackground.setScale(0.5f, 0.5f);
+                this->healthBarBackground.setPosition(600, 10);
+                this->healthBarBackground.setColor(sf::Color(128, 128, 128, 128));
+                return this->healthBarBackground;
+            } else {
+                this->healthBar.setScale(0.5f, 0.5f);
+                this->healthBar.setPosition(600, 10);
+                this->healthBar.setTextureRect(sf::IntRect(0, 0, this->healthPoints*10, 50));
+                return this->healthBar;
+            }
+        }
+
     private:
         int jumpHeight = 250;
         int score = 0;
+
+        int maxHealth = 100;
 
 
         bool checkEnd(sf::Sprite levelEnd, sf::RectangleShape playerSprite){
@@ -150,5 +174,4 @@ class Player: public Character
                 }
             }
         }
-
 };

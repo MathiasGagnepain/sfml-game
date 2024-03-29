@@ -56,8 +56,6 @@ int main()
     levelEnd.setScale(.2f,.2f);
     levelEnd.setPosition(1100.0f, 570.0f);
 
-
-
     // Platform
     Platform platform("../src/assets/platform.png", 700.0f, 480.0f, 1.0f, .75f);
     
@@ -127,6 +125,9 @@ int main()
         window.draw(platform.getPlatform());
         window.draw(levelEnd);
         window.draw(text.getGameScoreText(player.getScore()));
+
+        window.draw(player.drawHealthBar(0));
+        window.draw(player.drawHealthBar(1));
 
         window.draw(playerSprite);
 
