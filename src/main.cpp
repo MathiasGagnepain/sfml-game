@@ -126,6 +126,7 @@ int main()
         window.draw(ground);
         window.draw(platform.getPlatform());
         window.draw(levelEnd);
+        window.draw(text.getGameScoreText(player.getScore()));
 
         window.draw(playerSprite);
 

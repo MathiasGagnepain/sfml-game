@@ -7,7 +7,6 @@ class Player: public Character
 {
     public:
         int inventory[2];
-        int score = 0;
         float xPosition = 20;
         float yPosition = 400;
         float xVelocity = 0;
@@ -96,8 +95,17 @@ class Player: public Character
             return this->jumpClock.getElapsedTime(); 
         }
 
+        int getScore(){
+            return this->score;
+        }
+
+        void setScore(int score){
+            this->score = score;
+        }
+
     private:
         int jumpHeight = 250;
+        int score = 0;
 
 
         bool checkEnd(sf::Sprite levelEnd, sf::RectangleShape playerSprite){

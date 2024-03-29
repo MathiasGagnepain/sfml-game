@@ -9,6 +9,7 @@ class Text
         sf::Text pauseText;
         sf::Text gameoverText;
         sf::Text gameEndedText;
+        sf::Text gameScoreText;
 
         sf::Font font;
 
@@ -48,6 +49,15 @@ class Text
             this->gameEndedText.setStyle(sf::Text::Underlined);
         }
 
+        void loadGameScoreText(){
+            this->gameScoreText.setFont(this->font);
+            this->gameScoreText.setString("Score: 0");
+            this->gameScoreText.setCharacterSize(50);
+            this->gameScoreText.setFillColor(sf::Color::Black);
+            this->gameScoreText.setPosition(10, 10);
+            this->gameScoreText.setStyle(sf::Text::Underlined);
+        }
+
     public:
 
         Text(){
@@ -56,6 +66,7 @@ class Text
             loadPausedText();
             loadGameOverText();
             loadGameEndedText();
+            loadGameScoreText();
         }
 
         sf::Text getGameOverText(){
@@ -72,5 +83,10 @@ class Text
 
         sf::Text getGameEndedText(){
             return this->gameEndedText;
+        }
+
+        sf::Text getGameScoreText(int score){
+            this->gameScoreText.setString("Score: " + std::to_string(score));
+            return this->gameScoreText;
         }
 };
