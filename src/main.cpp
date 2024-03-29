@@ -13,6 +13,8 @@ using namespace std;
 #include "class/Character.cc"
 #include "class/Player.cc"
 #include "class/Text.cc"
+#include "class/Item.cc"
+#include "class/Collectable.cc"
 // #include "class/Enemy.cc"
 // #include "class/Item.cc"
 // #include "class/Collectable.cc"
@@ -65,6 +67,8 @@ int main()
 
     Player player("Sticky");
     Text text;
+
+    Collectable collectable;
 
     bool gameIsStarted = false;
     bool gameIsPaused = false;
@@ -126,10 +130,12 @@ int main()
         window.draw(levelEnd);
         window.draw(text.getGameScoreText(player.getScore()));
 
-        window.draw(player.drawHealthBar(0));
-        window.draw(player.drawHealthBar(1));
+
+        player.drawHealthBar(window);
 
         window.draw(playerSprite);
+
+        collectable.drawCollectable(1, 100, 100, window);
 
         // Text
         if(!gameIsStarted){

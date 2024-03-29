@@ -111,18 +111,17 @@ class Player: public Character
             this->score = score;
         }
 
-        sf::Sprite drawHealthBar(int type){
-            if (type == 0){
-                this->healthBarBackground.setScale(0.5f, 0.5f);
-                this->healthBarBackground.setPosition(600, 10);
-                this->healthBarBackground.setColor(sf::Color(128, 128, 128, 128));
-                return this->healthBarBackground;
-            } else {
-                this->healthBar.setScale(0.5f, 0.5f);
-                this->healthBar.setPosition(600, 10);
-                this->healthBar.setTextureRect(sf::IntRect(0, 0, this->healthPoints*10, 50));
-                return this->healthBar;
-            }
+        void drawHealthBar(sf::RenderWindow &window){
+            this->healthBarBackground.setScale(0.5f, 0.5f);
+            this->healthBarBackground.setPosition(600, 10);
+            this->healthBarBackground.setColor(sf::Color(128, 128, 128, 128));
+        
+            this->healthBar.setScale(0.5f, 0.5f);
+            this->healthBar.setPosition(600, 10);
+            this->healthBar.setTextureRect(sf::IntRect(0, 0, this->healthPoints*10, 50));
+
+            window.draw(healthBarBackground);
+            window.draw(healthBar);
         }
 
     private:
