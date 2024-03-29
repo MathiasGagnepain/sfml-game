@@ -15,7 +15,7 @@ class Text
 
         void loadGameOverText(){
             this->gameoverText.setFont(this->font);
-            this->gameoverText.setString("Game Over - Press Space to Restart");
+            this->gameoverText.setString("Game Over\nPress Space to Restart");
             this->gameoverText.setCharacterSize(50);
             this->gameoverText.setFillColor(sf::Color::Red);
             this->gameoverText.setPosition(325, 300);
@@ -61,7 +61,7 @@ class Text
     public:
 
         Text(){
-            this->font.loadFromFile("../src/assets/fonts/DrawingBlood.ttf");
+            this->font.loadFromFile(FONT);
             loadStartingText();
             loadPausedText();
             loadGameOverText();

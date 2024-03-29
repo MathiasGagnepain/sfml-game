@@ -6,20 +6,34 @@ using namespace std;
 
 class Collectable: public Item
 {
+    private:
+        sf::Texture collectable1Texture, collectable2Texture, collectable3Texture, collectable4Texture;
+        sf::Sprite collectable;
+
     public:
         int score;
-        bool isEat;
+        bool isEat = false;
         bool isResetter;
+        int type;
 
-        void collectCoin(Player &player, int coinType){
+        Collectable(int type){
+            this->type = type;
 
-            if(coinType == 1){
+            this->collectable1Texture.loadFromFile(COLLECTABLE1);
+            this->collectable2Texture.loadFromFile(COLLECTABLE2);
+            this->collectable3Texture.loadFromFile(COLLECTABLE3);
+            this->collectable4Texture.loadFromFile(COLLECTABLE4);
+        }
+
+        void collectCoin(Player &player){
+            this->score = player.getScore();
+            if(this->type == 1){
                 this->score += 10;
-            }else if(coinType == 2){
+            }else if(this->type == 2){
                 this->score += 100;
-            }else if(coinType == 3){
+            }else if(this->type == 3){
                 this->score -= 50;
-            }else if(coinType == 4){
+            }else if(this->type == 4){
                 this->score = 0;
             }else {
                 this->score += 0;
@@ -27,44 +41,45 @@ class Collectable: public Item
             player.setScore(this->score);
         }
 
-        void drawCollectable(int type, float x, float y, sf::RenderWindow &window, Player &player){
-            switch (type)
-            {
-            case 1:
-                collectableTexture.loadFromFile("../src/assets/diamond.png");
-                break;
-            case 2:
-                collectableTexture.loadFromFile("../src/assets/seriglassShard.png");
-                break;
-            case 3:
-                collectableTexture.loadFromFile("../src/assets/red_robux.png");
-                break;
-            case 4:
-                collectableTexture.loadFromFile("../src/assets/riot_point.png");
-                break;
-            default:
-                break;
-            }
+        void drawCollectable(float x, float y, sf::RenderWindow &window, Player &player){
 
-            collectable.setTexture(collectableTexture);
-            collectable.setScale(.1f,.1f);
-            collectable.setPosition(x, y);
-            collideWithPlayer(player, type);
+            switch (this->type)
+            {   
+                case 1:
+                    this->collectable.setTexture(this->collectable1Texture);
+                    break;
+                case 2:
+                    this->collectable.setTexture(this->collectable2Texture);
+                    break;
+                case 3:
+                    this->collectable.setTexture(this->collectable3Texture);
+                    break;
+                case 4:
+                    this->collectable.setTexture(this->collectable4Texture);
+                    break;
+                default:
+                    break;
+            }
+            this->collectable.setScale(.1f,.1f);
+            this->collectable.setPosition(x, y);
+
+            collideWithPlayer(player);
 
             if (this->isEat == false) {
-                window.draw(collectable);
+                window.draw(this->collectable);
             }
         }
 
-        void collideWithPlayer(Player &player, int type){
+        void collideWithPlayer(Player &player){
             if(player.getGlobalBounds().intersects(collectable.getGlobalBounds()) && !this->isEat){
-                collectable.setColor(sf::Color::Transparent);
-                collectCoin(player, type);
+                this->collectable.setColor(sf::Color::Transparent);
+                collectCoin(player);
                 this->isEat = true;
             }
         }
 
-    private:
-        sf::Texture collectableTexture;
-        sf::Sprite collectable;
+        void resetCollectable(){
+            this->isEat = false;
+            this->collectable.setColor(sf::Color::White);
+        }
 };

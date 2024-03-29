@@ -12,13 +12,12 @@ using namespace std;
 #include "class/Platform.cc"
 #include "class/Character.cc"
 #include "class/Player.cc"
+#include "class/Enemy.cc"
 #include "class/Text.cc"
 #include "class/Item.cc"
 #include "class/Collectable.cc"
-// #include "class/Enemy.cc"
-// #include "class/Item.cc"
-// #include "class/Collectable.cc"
-// #include "class/Weapon.cc"
+#include "class/Weapon.cc"
+
 
 #include "includes/main.h"
 
@@ -28,7 +27,7 @@ int main()
     window.setFramerateLimit(60);
 
     auto image = sf::Image{};
-    if (!image.loadFromFile("../src/assets/stickman_exploration_logo.png"))
+    if (!image.loadFromFile(LOGO))
     {
         printf("Error loading icon image\n");
     }
@@ -38,7 +37,7 @@ int main()
     sf::Texture backgroundTexture;
     sf::Sprite background;
 
-    backgroundTexture.loadFromFile("../src/assets/background.png");
+    backgroundTexture.loadFromFile(BACKGROUND);
     background.setTexture(backgroundTexture);
     background.setScale(2.0f,2.0f);
 
@@ -46,7 +45,7 @@ int main()
     sf::Texture groundTexture;
     sf::Sprite ground;
 
-    groundTexture.loadFromFile("../src/assets/ground.png");
+    groundTexture.loadFromFile(GROUND);
     ground.setTexture(groundTexture);
     ground.setScale(2.0f,1.0f);
     ground.setPosition(0.0f, 600.0f);
@@ -54,21 +53,25 @@ int main()
     // Level End
     sf::Texture levelEndTexture;
     sf::Sprite levelEnd;
-    levelEndTexture.loadFromFile("../src/assets/end.png");
+    levelEndTexture.loadFromFile(LEVEL_END);
     levelEnd.setTexture(levelEndTexture);
     levelEnd.setScale(.2f,.2f);
     levelEnd.setPosition(1100.0f, 570.0f);
 
     // Platform
-    Platform platform("../src/assets/platform.png", 700.0f, 480.0f, 1.0f, .75f);
+    Platform platform(PLATFORM, 700.0f, 480.0f, 1.0f, .75f);
 
+    Enemy enemy(1);
     Player player("Sticky");
+    Weapon weapon(1, 10, false);
     Text text;
 
-    Collectable collectable;
+    Collectable collectable1(1), collectable2(2), collectable3(3), collectable4(4);
 
     bool gameIsStarted = false;
     bool gameIsPaused = false;
+
+    bool healthReduce = false;
 
     sf::Clock pauseClock;
     sf::Time pauseCooldown;
@@ -87,10 +90,15 @@ int main()
             if(!gameIsStarted){
                 gameIsStarted = true;
             }
-            else if (player.levelEnded){
+            else if (player.levelEnded or player.healthPoints <= 0){
                 gameIsStarted = false;
                 player.levelEnded = false;
                 player.resetPosition();
+                player.healthPoints = 100;
+                collectable1.resetCollectable();
+                collectable2.resetCollectable();
+                collectable3.resetCollectable();
+                collectable4.resetCollectable();
             }
         }
         if (gameIsStarted && !player.levelEnded && player.healthPoints > 0) {
@@ -112,6 +120,16 @@ int main()
                 if((sf::Keyboard::isKeyPressed(sf::Keyboard::Down) || sf::Keyboard::isKeyPressed(sf::Keyboard::S)) && player.yPosition < ground.getPosition().y - 20){
                     player.crouch(ground);
                 }
+
+                // TODO: Remove these after testing
+                if(sf::Keyboard::isKeyPressed(sf::Keyboard::K) && !healthReduce){
+                    player.healthPoints -= 10;
+                    healthReduce = true;
+
+                }
+                if(sf::Keyboard::isKeyPressed(sf::Keyboard::L) && healthReduce){
+                    healthReduce = false;
+                }
             }
         }
 
@@ -130,7 +148,13 @@ int main()
 
         player.drawPlayer(window);
 
-        collectable.drawCollectable(1, 800, 425, window, player);
+        collectable1.drawCollectable(700, 425, window, player);
+        collectable2.drawCollectable(775, 425, window, player);
+        collectable3.drawCollectable(850, 425, window, player);
+        collectable4.drawCollectable(950, 425, window, player);
+
+        enemy.drawEnemy(500, 500, window, player);
+        weapon.drawWeapon(300, 500, window, player);
 
         // Text
         if(!gameIsStarted){
@@ -143,6 +167,8 @@ int main()
         }
         if(player.healthPoints <= 0){
             window.draw(text.getGameOverText());
+            player.xVelocity = 0;
+            player.yVelocity = 0;
         }
         
         window.display();

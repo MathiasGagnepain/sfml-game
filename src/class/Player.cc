@@ -30,12 +30,12 @@ class Player: public Character
             this->name = name;
 
             
-            this->healthBarTexture.loadFromFile("../src/assets/healthbar.png");
+            this->healthBarTexture.loadFromFile(HEALTH_BAR);
             this->healthBar.setTexture(healthBarTexture);
             this->healthBarBackground.setTexture(healthBarTexture);
 
             // Player
-            this->playerTexture.loadFromFile("../src/assets/stickman.png");
+            this->playerTexture.loadFromFile(PLAYER);
             this->playerSprite.setTexture(playerTexture);
             this->playerSprite.setScale(sf::Vector2f(0.2f, 0.2f));
         }
@@ -63,9 +63,7 @@ class Player: public Character
         * @return void
         */
         void moveLeft(){
-            if (this->xPosition > 0) {
-                this->xVelocity = -5;
-            }
+            this->xVelocity = -5;
         }
 
         /*
@@ -101,6 +99,10 @@ class Player: public Character
         * @return void
         */
         void physics(sf::Sprite ground, Platform platform, sf::Sprite levelEnd){
+            if (this->xPosition <= 0 && this->xVelocity < 0){
+                this->xPosition = 0;
+                this->xVelocity = 0;
+            }
             this->xPosition += this->xVelocity;
             jumping();
             gravity(ground, platform);
@@ -131,7 +133,10 @@ class Player: public Character
         
             this->healthBar.setScale(0.5f, 0.5f);
             this->healthBar.setPosition(600, 10);
-            this->healthBar.setTextureRect(sf::IntRect(0, 0, this->healthPoints*10, 50));
+            
+            int healthBarSizeInPercent = this->healthBar.getTexture()->getSize().x/100;
+
+            this->healthBar.setTextureRect(sf::IntRect(0, 0, this->healthPoints*healthBarSizeInPercent, 50));
 
             window.draw(healthBarBackground);
             window.draw(healthBar);
