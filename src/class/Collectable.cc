@@ -8,6 +8,7 @@ class Collectable: public Item
 {
     public:
         int score;
+        bool isEat;
         bool isResetter;
 
         void collectCoin(Player &player, int coinType){
@@ -31,10 +32,6 @@ class Collectable: public Item
             {
             case 1:
                 collectableTexture.loadFromFile("../src/assets/diamond.png");
-                collectable.setTexture(collectableTexture);
-                collectable.setScale(.1f,.1f);
-                collectable.setPosition(x, y);
-                collideWithPlayer(player, type);
                 break;
             case 2:
                 collectableTexture.loadFromFile("../src/assets/seriglassShard.png");
@@ -43,19 +40,27 @@ class Collectable: public Item
                 collectableTexture.loadFromFile("../src/assets/red_robux.png");
                 break;
             case 4:
-                // collectableTexture.loadFromFile("../src/assets/coin.png");
+                collectableTexture.loadFromFile("../src/assets/riot_point.png");
                 break;
             default:
                 break;
             }
 
-            window.draw(collectable);
+            collectable.setTexture(collectableTexture);
+            collectable.setScale(.1f,.1f);
+            collectable.setPosition(x, y);
+            collideWithPlayer(player, type);
+
+            if (this->isEat == false) {
+                window.draw(collectable);
+            }
         }
 
         void collideWithPlayer(Player &player, int type){
-            if(player.getGlobalBounds().intersects(collectable.getGlobalBounds())){
+            if(player.getGlobalBounds().intersects(collectable.getGlobalBounds()) && !this->isEat){
+                collectable.setColor(sf::Color::Transparent);
                 collectCoin(player, type);
-                collectable.setPosition(-1000, -1000);
+                this->isEat = true;
             }
         }
 

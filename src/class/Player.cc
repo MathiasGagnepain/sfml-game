@@ -63,7 +63,9 @@ class Player: public Character
         * @return void
         */
         void moveLeft(){
-            this->xVelocity = -5;
+            if (this->xPosition > 0) {
+                this->xVelocity = -5;
+            }
         }
 
         /*

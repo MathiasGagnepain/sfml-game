@@ -130,7 +130,7 @@ int main()
 
         player.drawPlayer(window);
 
-        collectable.drawCollectable(1, 100, 100, window, player);
+        collectable.drawCollectable(1, 800, 425, window, player);
 
         // Text
         if(!gameIsStarted){
