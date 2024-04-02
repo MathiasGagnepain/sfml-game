@@ -14,4 +14,4 @@ const string COLLECTABLE2 = "../src/assets/seriglassShard.png";
 const string COLLECTABLE3 = "../src/assets/red_robux.png";
 const string COLLECTABLE4 = "../src/assets/riot_point.png";
 const string ATTACK_WEAPON = "../src/assets/weapon.png";
-// const string DEFENSE_WEAPON = "../src/assets/defense_weapon.png";
+const string DEFENSE_WEAPON = "../src/assets/nukaColaShield.png";

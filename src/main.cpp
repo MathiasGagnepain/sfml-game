@@ -61,9 +61,9 @@ int main()
     // Platform
     Platform platform(PLATFORM, 700.0f, 480.0f, 1.0f, .75f);
 
-    Enemy enemy(1);
+    Enemy enemy(500, 500, 1);
     Player player("Sticky");
-    Weapon weapon(1, 10, false);
+    Weapon weapon(1, 10, false, 300, 500), shield(2, 5, true, 400, 500);
     Text text;
 
     Collectable collectable1(1), collectable2(2), collectable3(3), collectable4(4);
@@ -71,10 +71,8 @@ int main()
     bool gameIsStarted = false;
     bool gameIsPaused = false;
 
-    bool healthReduce = false;
-
-    sf::Clock pauseClock;
-    sf::Time pauseCooldown;
+    sf::Clock keypressedClock;
+    sf::Time keypressedCooldown;
 
     while (window.isOpen())
     {   
@@ -99,11 +97,14 @@ int main()
                 collectable2.resetCollectable();
                 collectable3.resetCollectable();
                 collectable4.resetCollectable();
+                weapon.resetWeapon();
+                shield.resetWeapon();
+                enemy.resetEnemy();
             }
         }
         if (gameIsStarted && !player.levelEnded && player.healthPoints > 0) {
-            if(sf::Keyboard::isKeyPressed(sf::Keyboard::P) && pauseCooldown.asSeconds() >= .5f){
-                pauseClock.restart();
+            if(sf::Keyboard::isKeyPressed(sf::Keyboard::P) && keypressedCooldown.asSeconds() >= .5f){
+                keypressedClock.restart();
                 gameIsPaused = !gameIsPaused;
             }
             
@@ -120,15 +121,10 @@ int main()
                 if((sf::Keyboard::isKeyPressed(sf::Keyboard::Down) || sf::Keyboard::isKeyPressed(sf::Keyboard::S)) && player.yPosition < ground.getPosition().y - 20){
                     player.crouch(ground);
                 }
+                if(sf::Keyboard::isKeyPressed(sf::Keyboard::F) && keypressedCooldown.asSeconds() >= .5f){
+                    keypressedClock.restart();
+                    player.selectSlot();
 
-                // TODO: Remove these after testing
-                if(sf::Keyboard::isKeyPressed(sf::Keyboard::K) && !healthReduce){
-                    player.healthPoints -= 10;
-                    healthReduce = true;
-
-                }
-                if(sf::Keyboard::isKeyPressed(sf::Keyboard::L) && healthReduce){
-                    healthReduce = false;
                 }
             }
         }
@@ -153,8 +149,9 @@ int main()
         collectable3.drawCollectable(850, 425, window, player);
         collectable4.drawCollectable(950, 425, window, player);
 
-        enemy.drawEnemy(500, 500, window, player);
-        weapon.drawWeapon(300, 500, window, player);
+        enemy.drawEnemy(window, player);
+        weapon.drawWeapon(window, player);
+        shield.drawWeapon(window, player);
 
         // Text
         if(!gameIsStarted){
@@ -173,7 +170,7 @@ int main()
         
         window.display();
 
-        pauseCooldown = pauseClock.getElapsedTime();
+        keypressedCooldown = keypressedClock.getElapsedTime();
     }
 
     return 0;

@@ -6,13 +6,14 @@ using namespace std;
 class Player: public Character
 {
     public:
-        int inventory[2];
+        int inventory[2] = {0, 0};
         float xPosition = 20;
         float yPosition = 0;
         float xVelocity = 0;
         float yVelocity = 0;
         bool isJumping = false;
         float originalPlayerPosition = 0;
+        int selectedSlot = 0;
 
         int healthPoints = 100;
         float baseDamage = 2;
@@ -153,6 +154,19 @@ class Player: public Character
         void drawPlayer(sf::RenderWindow &window){
             this->playerSprite.setPosition(this->xPosition, this->yPosition);
             window.draw(this->playerSprite);
+        }
+
+        int getSelectedSlot(){
+            return this->selectedSlot;
+        }
+
+        void selectSlot(){
+            if (this->selectedSlot < 1) {
+                ++this->selectedSlot;
+            } else {
+                this->selectedSlot = 0;
+            }
+            cout << "Selected Slot: " << this->selectedSlot << endl;
         }
 
     private:
