@@ -49,7 +49,13 @@ class Enemy: public Character
                 }
             }
             if (this->healthPoints > 0) {
-                this->enemyTexture.loadFromFile(ENEMY);
+
+                if (player.xPosition < this->xPosition) {
+                    this->enemyTexture.loadFromFile(ENEMY_IDLE_LEFT[this->animationIndex]);
+                }
+                else {
+                    this->enemyTexture.loadFromFile(ENEMY_IDLE_RIGHT[this->animationIndex]);
+                }
                 this->enemySprite.setTexture(this->enemyTexture);
                 this->enemySprite.setScale(sf::Vector2f(0.2f, 0.2f));
                 this->enemySprite.setColor(sf::Color::Red);
@@ -58,7 +64,19 @@ class Enemy: public Character
                 playerCollide(player);
 
                 window.draw(this->enemySprite);
+
+                if (this->animationCooldown.asSeconds() >= 0.1f) {  
+                    animationClock.restart();
+                    if (this->animationIndex < 2) {
+                        ++this->animationIndex;
+                    }
+                    else {
+                        this->animationIndex = 0;
+                    }
+                }
             }
+
+            animationCooldown = animationClock.getElapsedTime();
         }
 
         void resetEnemy(){
@@ -73,6 +91,10 @@ class Enemy: public Character
         float xPosition = 0;
         float yPosition = 0;
         float originalXPosition = 0;
+        int animationIndex = 0;
+
+        sf::Clock animationClock;
+        sf::Time animationCooldown;
 
         int getDamage(){
             int damage = 0;

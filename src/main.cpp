@@ -18,7 +18,6 @@ using namespace std;
 #include "class/items/Collectable.cc"
 #include "class/items/Weapon.cc"
 
-
 #include "includes/main.hpp"
 
 int main()
@@ -142,7 +141,7 @@ int main()
 
         player.drawHealthBar(window);
 
-        player.drawPlayer(window);
+        player.drawPlayer(window, platform);
 
         collectable1.drawCollectable(700, 425, window, player);
         collectable2.drawCollectable(775, 425, window, player);

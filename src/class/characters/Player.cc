@@ -14,7 +14,9 @@ class Player: public Character
         float yVelocity = 0;
         bool isJumping = false;
         bool isCrouching = false;
+        bool isMiddleScreen = false;
         float originalPlayerPosition = 0;
+        float offsetX = 0;
         int selectedSlot = 0;
         int animationIndex = 0;
 
@@ -121,11 +123,7 @@ class Player: public Character
             return this->playerSprite.getGlobalBounds();
         }
 
-        void updatePlayerPosition(){
-            this->playerSprite.setPosition(this->xPosition, this->yPosition);
-        }
-
-        void drawPlayer(sf::RenderWindow &window){
+        void drawPlayer(sf::RenderWindow &window, Platform &platform){
             if (this->isCrouching) {
                 this->playerTexture.loadFromFile(PLAYER_CROUCHING);
 
@@ -153,6 +151,17 @@ class Player: public Character
                 } else {
                     ++this->animationIndex;
                 }
+            }
+            if (this->xPosition + this->xVelocity >= 500 - this->playerSprite.getTexture()->getSize().x * this->playerSprite.getScale().x){
+                this->xPosition = 500 - this->playerSprite.getTexture()->getSize().x * this->playerSprite.getScale().x;
+                platform.setPosition(platform.getPosition()[0] - 1, platform.getPosition()[1]);
+                this->offsetX += 1;
+            } else if (this->offsetX > 0){
+                this->xPosition = 500 - this->playerSprite.getTexture()->getSize().x * this->playerSprite.getScale().x;
+                platform.setPosition(platform.getPosition()[0] + 1, platform.getPosition()[1]);
+                this->offsetX -= 1;
+            } else if (this->xPosition <= 0) {
+                this->xPosition = 0;
             }
 
             this->playerSprite.setTexture(playerTexture);
