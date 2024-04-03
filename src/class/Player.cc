@@ -12,20 +12,20 @@ class Player: public Character
         float xVelocity = 0;
         float yVelocity = 0;
         bool isJumping = false;
+        bool isCrouching = false;
         float originalPlayerPosition = 0;
         int selectedSlot = 0;
+        int animationIndex = 0;
 
         int healthPoints = 100;
         float baseDamage = 2;
         bool levelEnded = false;
 
-        sf::Clock jumpClock;
-        sf::Time jumpCooldown;
+        sf::Clock jumpClock, animationClock;
+        sf::Time jumpCooldown, animationCooldown;
 
         sf::Texture healthBarTexture, playerTexture;
         sf::Sprite healthBar, healthBarBackground, playerSprite;
-
-        // sf::Vector2f(75.0f, 100.0f)
 
         Player(string name){
             this->name = name;
@@ -36,7 +36,7 @@ class Player: public Character
             this->healthBarBackground.setTexture(healthBarTexture);
 
             // Player
-            this->playerTexture.loadFromFile(PLAYER);
+            this->playerTexture.loadFromFile(PLAYER[0]);
             this->playerSprite.setTexture(playerTexture);
             this->playerSprite.setScale(sf::Vector2f(0.2f, 0.2f));
         }
@@ -46,6 +46,8 @@ class Player: public Character
             this->yPosition = 400;
             this->xVelocity = 0;
             this->yVelocity = 0;
+            this->inventory[0] = 0;
+            this->inventory[1] = 0;
         }
 
 
@@ -82,7 +84,6 @@ class Player: public Character
         * This function is responsible for the crouching of the player
         * @param void
         * @return void
-        * TODO: Implement crouching
         */
         void crouch(sf::Sprite ground){
             this->isJumping = false;
@@ -92,6 +93,9 @@ class Player: public Character
             if (this->playerSprite.getPosition().y + playerHeight/4 < ground.getPosition().y - 20) {
                 this->yPosition += 10;
             }
+
+            this->isCrouching = true;
+            this->xVelocity = 0;
         }
 
         /*
@@ -152,8 +156,51 @@ class Player: public Character
         }
 
         void drawPlayer(sf::RenderWindow &window){
+            if (this->isCrouching) {
+                this->playerTexture.loadFromFile("../src/assets/animations/sticky/stickman_crouching.png");
+                this->playerSprite.setTexture(playerTexture);
+            } else {
+                this->playerTexture.loadFromFile(PLAYER[this->animationIndex]);
+                this->playerSprite.setTexture(playerTexture);
+                if (animationCooldown.asSeconds() >= 0.2f) {
+                    animationClock.restart();
+                    if (this->animationIndex >= 2) {
+                        this->animationIndex = 0;
+                    } else {
+                        ++this->animationIndex;
+                    }
+                }
+            }
             this->playerSprite.setPosition(this->xPosition, this->yPosition);
             window.draw(this->playerSprite);
+
+            if (this->inventory[this->selectedSlot] != 0){
+                sf::Texture weaponTexture;
+                sf::Sprite weaponSprite;
+                float weaponXPosition = this->xPosition;
+                float weaponYPosition = this->yPosition;
+
+                if (this->inventory[this->selectedSlot] == 1){
+                    weaponTexture.loadFromFile(ATTACK_WEAPON);
+                    weaponTexture.setSmooth(true);
+                    weaponSprite.rotate(180);
+                    weaponXPosition += 90;
+                    weaponYPosition += 68;
+                    weaponSprite.setScale(0.2f, 0.2f);
+                } else if (this->inventory[this->selectedSlot] == 2){
+                    weaponTexture.loadFromFile(DEFENSE_WEAPON);
+                    weaponTexture.setSmooth(true);
+                    weaponXPosition += 15;
+                    weaponYPosition += 30;
+                    weaponSprite.setScale(0.15f, 0.15f);
+                }
+
+                weaponSprite.setTexture(weaponTexture);
+                weaponSprite.setPosition(weaponXPosition, weaponYPosition);
+                window.draw(weaponSprite);
+            }
+
+            animationCooldown = animationClock.getElapsedTime();
         }
 
         int getSelectedSlot(){

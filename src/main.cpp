@@ -167,6 +167,9 @@ int main()
             player.xVelocity = 0;
             player.yVelocity = 0;
         }
+        if (player.isCrouching) {
+            player.isCrouching = false;
+        }
         
         window.display();
 
