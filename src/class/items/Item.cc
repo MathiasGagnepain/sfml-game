@@ -4,8 +4,9 @@
 using namespace std;
 
 
-class Player: public Character
+class Item
 {
     public:
-        char* type;
+        char* name;
+        char* position;
 };

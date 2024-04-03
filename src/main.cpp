@@ -8,83 +8,71 @@ using namespace std;
 
 // custom
 
-#include "class/Character.cc"
-#include "class/Player.cc"
-// #include "class/Enemy.cc"
-// #include "class/Item.cc"
-// #include "class/Collectable.cc"
-// #include "class/Weapon.cc"
+#include "includes/path.hpp"
+#include "class/Platform.cc"
+#include "class/characters/Character.cc"
+#include "class/characters/Player.cc"
+#include "class/characters/Enemy.cc"
+#include "class/display/Text.cc"
+#include "class/items/Item.cc"
+#include "class/items/Collectable.cc"
+#include "class/items/Weapon.cc"
 
-#include "includes/main.h"
 
-// TODO: Block the player from being affected by gravity when he is jumping.
-// TODO: Fix jumpcooldown
+#include "includes/main.hpp"
 
 int main()
 {
-    sf::RenderWindow window(sf::VideoMode(SCREEN_WIDTH, SCREEN_HEIGHT), "Stickman Exploration");
+    sf::RenderWindow window(sf::VideoMode(SCREEN_WIDTH, SCREEN_HEIGHT), "Stickman Exploration", sf::Style::Close | sf::Style::Titlebar);
+    window.setFramerateLimit(60);
+
+    auto image = sf::Image{};
+    if (!image.loadFromFile(LOGO))
+    {
+        printf("Error loading icon image\n");
+    }
+    window.setIcon(image.getSize().x, image.getSize().y, image.getPixelsPtr());
 
     // Background
     sf::Texture backgroundTexture;
-    backgroundTexture.loadFromFile("../src/assets/background.png");
     sf::Sprite background;
+
+    backgroundTexture.loadFromFile(BACKGROUND);
     background.setTexture(backgroundTexture);
     background.setScale(2.0f,2.0f);
 
     // Ground
     sf::Texture groundTexture;
-    groundTexture.loadFromFile("../src/assets/ground.png");
     sf::Sprite ground;
+
+    groundTexture.loadFromFile(GROUND);
     ground.setTexture(groundTexture);
     ground.setScale(2.0f,1.0f);
     ground.setPosition(0.0f, 600.0f);
 
-    // Text
-    sf::Text text;
-    sf::Font font;
-    font.loadFromFile("../src/assets/fonts/DrawingBlood.ttf");
-    text.setFont(font);
-    text.setString("Press Space to Start");
-    text.setCharacterSize(50);
-    text.setFillColor(sf::Color::Black);
-    text.setPosition(400, 300);
-    text.setStyle(sf::Text::Underlined);
+    // Level End
+    sf::Texture levelEndTexture;
+    sf::Sprite levelEnd;
+    levelEndTexture.loadFromFile(LEVEL_END);
+    levelEnd.setTexture(levelEndTexture);
+    levelEnd.setScale(.2f,.2f);
+    levelEnd.setPosition(1100.0f, 570.0f);
 
-    sf::Text text2;
-    text2.setFont(font);
-    text2.setString("Paused - Press P to Resume");
-    text2.setCharacterSize(50);
-    text2.setFillColor(sf::Color::Black);
-    text2.setPosition(400, 300);
-    text2.setStyle(sf::Text::Underlined);
+    // Platform
+    Platform platform(PLATFORM, 700.0f, 480.0f, 1.0f, .75f);
 
-    sf::Text gameoverText;
-    gameoverText.setFont(font);
-    gameoverText.setString("Game Over - Press Space to Restart");
-    gameoverText.setCharacterSize(50);
-    gameoverText.setFillColor(sf::Color::Red);
-    gameoverText.setPosition(400, 300);
-    gameoverText.setStyle(sf::Text::Underlined);
-    
+    Enemy enemy(500, 500, 1);
+    Player player("Sticky");
+    Weapon weapon(1, 10, false, 300, 500), shield(2, 5, true, 400, 500);
+    Text text;
 
-    // Player
-    sf::RectangleShape playerSprite(sf::Vector2f(75.0f, 100.0f));
-    playerSprite.setFillColor(sf::Color::Red);
-
-    Player player;
-    player.xPosition = 20;
-    player.yPosition = 200;
-    player.inventory[0] = 0;
-    player.inventory[1] = 0;
-    player.name = "Sticky";
-    player.healthPoints = 100;
-    player.baseDamage = 2;
+    Collectable collectable1(1), collectable2(2), collectable3(3), collectable4(4);
 
     bool gameIsStarted = false;
     bool gameIsPaused = false;
 
-    sf::Clock pauseClock, jumpClock;
-    sf::Time pauseCooldown, jumpCooldown;
+    sf::Clock keypressedClock;
+    sf::Time keypressedCooldown;
 
     while (window.isOpen())
     {   
@@ -95,55 +83,97 @@ int main()
                 window.close();
         }
 
-
-        if(!gameIsStarted){
-            if(sf::Keyboard::isKeyPressed(sf::Keyboard::Space)){
+        // Keyboard Events
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::Space)){ 
+            if(!gameIsStarted){
                 gameIsStarted = true;
             }
-        } else{
-            if(sf::Keyboard::isKeyPressed(sf::Keyboard::P) && pauseCooldown.asSeconds() >= .5f){
-                pauseClock.restart();
+            else if (player.levelEnded or player.healthPoints <= 0){
+                gameIsStarted = false;
+                player.levelEnded = false;
+                player.resetPosition();
+                player.healthPoints = 100;
+                collectable1.resetCollectable();
+                collectable2.resetCollectable();
+                collectable3.resetCollectable();
+                collectable4.resetCollectable();
+                weapon.resetWeapon();
+                shield.resetWeapon();
+                enemy.resetEnemy();
+            }
+        }
+        if (gameIsStarted && !player.levelEnded && player.healthPoints > 0) {
+            if(sf::Keyboard::isKeyPressed(sf::Keyboard::P) && keypressedCooldown.asSeconds() >= .5f){
+                keypressedClock.restart();
                 gameIsPaused = !gameIsPaused;
             }
             
             if(!gameIsPaused){
-                if(sf::Keyboard::isKeyPressed(sf::Keyboard::Right)){
-                    player.xPosition += 0.2;
-                } else if(sf::Keyboard::isKeyPressed(sf::Keyboard::Left)){
-                    player.xPosition -= 0.2;
-                } else if(sf::Keyboard::isKeyPressed(sf::Keyboard::Up) && player.yPosition >= ground.getPosition().y - 20){
-                    player.yPosition -= 2;
-                } else if(sf::Keyboard::isKeyPressed(sf::Keyboard::Down) && player.yPosition < ground.getPosition().y - 20){
-                    player.yPosition += 2;
+                if(sf::Keyboard::isKeyPressed(sf::Keyboard::Right) || sf::Keyboard::isKeyPressed(sf::Keyboard::D)){
+                    player.moveRight();
+                }
+                if(sf::Keyboard::isKeyPressed(sf::Keyboard::Left) || sf::Keyboard::isKeyPressed(sf::Keyboard::Q)){
+                    player.moveLeft();
+                }
+                if((sf::Keyboard::isKeyPressed(sf::Keyboard::Up) || sf::Keyboard::isKeyPressed(sf::Keyboard::Z)) && !player.isJumping && player.getJumpCooldown().asSeconds() >= .5f){
+                    player.jump();
+                }
+                if((sf::Keyboard::isKeyPressed(sf::Keyboard::Down) || sf::Keyboard::isKeyPressed(sf::Keyboard::S)) && player.yPosition < ground.getPosition().y - 20){
+                    player.crouch(ground);
+                }
+                if(sf::Keyboard::isKeyPressed(sf::Keyboard::F) && keypressedCooldown.asSeconds() >= .5f){
+                    keypressedClock.restart();
+                    player.selectSlot();
+
                 }
             }
         }
 
         window.clear();
-
-        if(playerSprite.getPosition().y < ground.getPosition().y - 20 && jumpCooldown.asSeconds() <= .5f){
-            jumpClock.restart();
-            player.yPosition += 1;
-        }
         
-        playerSprite.setPosition(player.xPosition, player.yPosition);
+        player.physics(ground, platform, levelEnd);
 
         window.draw(background);
         window.draw(ground);
-        window.draw(playerSprite);
+        window.draw(platform.getPlatform());
+        window.draw(levelEnd);
+        window.draw(text.getGameScoreText(player.getScore()));
+
+
+        player.drawHealthBar(window);
+
+        player.drawPlayer(window);
+
+        collectable1.drawCollectable(700, 425, window, player);
+        collectable2.drawCollectable(775, 425, window, player);
+        collectable3.drawCollectable(850, 425, window, player);
+        collectable4.drawCollectable(950, 425, window, player);
+
+        enemy.drawEnemy(window, player);
+        weapon.drawWeapon(window, player);
+        shield.drawWeapon(window, player);
+
+        // Text
         if(!gameIsStarted){
-            window.draw(text);
+            window.draw(text.getStartingText());
+        } else if (player.levelEnded) {
+            window.draw(text.getGameEndedText());
         }
         if(gameIsPaused){
-            window.draw(text2);
+           window.draw(text.getPausedText());
         }
         if(player.healthPoints <= 0){
-            window.draw(gameoverText);
+            window.draw(text.getGameOverText());
+            player.xVelocity = 0;
+            player.yVelocity = 0;
         }
+        if (player.isCrouching) {
+            player.isCrouching = false;
+        }
+        
         window.display();
 
-        pauseCooldown = pauseClock.getElapsedTime();
-        jumpCooldown = jumpClock.getElapsedTime();
+        keypressedCooldown = keypressedClock.getElapsedTime();
     }
 
     return 0;

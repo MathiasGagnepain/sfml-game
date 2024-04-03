@@ -20,8 +20,6 @@ project(
 find_package(Threads REQUIRED)
 
 add_executable(game
-    src/includes/menu.cc
-    src/class/character.cc
     src/main.cpp
 )
 
