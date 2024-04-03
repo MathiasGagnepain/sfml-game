@@ -8,7 +8,7 @@ using namespace std;
 
 // custom
 
-#include "includes/path.h"
+#include "includes/path.hpp"
 #include "class/Platform.cc"
 #include "class/characters/Character.cc"
 #include "class/characters/Player.cc"
@@ -19,7 +19,7 @@ using namespace std;
 #include "class/items/Weapon.cc"
 
 
-#include "includes/main.h"
+#include "includes/main.hpp"
 
 int main()
 {
