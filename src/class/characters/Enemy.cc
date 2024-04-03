@@ -33,14 +33,9 @@ class Enemy: public Character
             if(this->enemySprite.getGlobalBounds().intersects(player.getGlobalBounds())){
                 if (player.inventory[player.selectedSlot] != 2) {
                     player.healthPoints -= getDamage();
-                    player.xVelocity > 0 ? player.xPosition -= this->knockBack : player.xPosition += this->knockBack;
                     attack(player);
                 }
-
-                cout << "Inventory Item: " << player.inventory[player.selectedSlot] << endl;
-
-                
-
+                player.xVelocity > 0 ? player.xPosition -= this->knockBack : player.xPosition += this->knockBack;
             }
         }
 
@@ -106,11 +101,10 @@ class Enemy: public Character
                     this->originalXPosition = this->xPosition;
                 }
                 this->healthPoints -= 2; //player.inventory[player.selectedSlot].damage;
-                player.xVelocity > 0 ? this->xPosition += this->knockBack/4 : this->xPosition -= this->knockBack/4;
                 if (this->healthPoints <= 0) {
                     player.setScore(player.getScore() + 100);
                 }
-                cout << "Enemy Health: " << this->healthPoints << endl;
             }
+            player.xVelocity > 0 ? this->xPosition += this->knockBack/4 : this->xPosition -= this->knockBack/4;
         }
 };

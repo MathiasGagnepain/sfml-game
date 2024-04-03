@@ -198,7 +198,6 @@ class Player: public Character
             } else {
                 this->selectedSlot = 0;
             }
-            cout << "Selected Slot: " << this->selectedSlot << endl;
         }
 
     private:
