@@ -1,8 +1,41 @@
 #include <string>
 #include <iostream>
+#include "Text.hpp"
 
 class Text 
 {
+    public:
+
+        Text(){
+            this->font.loadFromFile(FONT);
+            loadStartingText();
+            loadPausedText();
+            loadGameOverText();
+            loadGameEndedText();
+            loadGameScoreText();
+        }
+
+        sf::Text getGameOverText(){
+            return this->gameoverText;
+        }
+
+        sf::Text getStartingText(){
+            return this->startingText;
+        }
+
+        sf::Text getPausedText(){
+            return this->pauseText;
+        }
+
+        sf::Text getGameEndedText(){
+            return this->gameEndedText;
+        }
+
+        sf::Text getGameScoreText(int score){
+            this->gameScoreText.setString("Score: " + std::to_string(score));
+            return this->gameScoreText;
+        }
+
     private:
         // Text
         sf::Text startingText;
@@ -56,37 +89,5 @@ class Text
             this->gameScoreText.setFillColor(sf::Color::Black);
             this->gameScoreText.setPosition(10, 10);
             this->gameScoreText.setStyle(sf::Text::Underlined);
-        }
-
-    public:
-
-        Text(){
-            this->font.loadFromFile(FONT);
-            loadStartingText();
-            loadPausedText();
-            loadGameOverText();
-            loadGameEndedText();
-            loadGameScoreText();
-        }
-
-        sf::Text getGameOverText(){
-            return this->gameoverText;
-        }
-
-        sf::Text getStartingText(){
-            return this->startingText;
-        }
-
-        sf::Text getPausedText(){
-            return this->pauseText;
-        }
-
-        sf::Text getGameEndedText(){
-            return this->gameEndedText;
-        }
-
-        sf::Text getGameScoreText(int score){
-            this->gameScoreText.setString("Score: " + std::to_string(score));
-            return this->gameScoreText;
         }
 };

@@ -10,13 +10,13 @@ using namespace std;
 
 #include "includes/path.h"
 #include "class/Platform.cc"
-#include "class/Character.cc"
-#include "class/Player.cc"
-#include "class/Enemy.cc"
-#include "class/Text.cc"
-#include "class/Item.cc"
-#include "class/Collectable.cc"
-#include "class/Weapon.cc"
+#include "class/characters/Character.cc"
+#include "class/characters/Player.cc"
+#include "class/characters/Enemy.cc"
+#include "class/display/Text.cc"
+#include "class/items/Item.cc"
+#include "class/items/Collectable.cc"
+#include "class/items/Weapon.cc"
 
 
 #include "includes/main.h"

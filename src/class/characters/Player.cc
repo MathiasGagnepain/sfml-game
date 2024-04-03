@@ -1,5 +1,6 @@
 #include <string>
 #include <iostream>
+#include "Player.hpp"
 
 using namespace std;
 
@@ -50,41 +51,20 @@ class Player: public Character
             this->inventory[1] = 0;
         }
 
-
-        /*
-        * This function is responsible for the movement of the player to the right
-        * @param void
-        * @return void
-        */
         void moveRight(){
             this->xVelocity = 5;
         }
 
-        /*
-        * This function is responsible for the movement of the player to the left
-        * @param void
-        * @return void
-        */
         void moveLeft(){
             this->xVelocity = -5;
         }
 
-        /*
-        * This function is responsible for the jumping of the player
-        * @param void
-        * @return void
-        */
         void jump(){
             this->isJumping = true;
             this->originalPlayerPosition = this->yPosition;
             this->yVelocity = -10;
         }
 
-        /*
-        * This function is responsible for the crouching of the player
-        * @param void
-        * @return void
-        */
         void crouch(sf::Sprite ground){
             this->isJumping = false;
 
@@ -98,11 +78,6 @@ class Player: public Character
             this->xVelocity = 0;
         }
 
-        /*
-        * This function is responsible for the physics of the player
-        * @param ground: the ground sprite
-        * @return void
-        */
         void physics(sf::Sprite ground, Platform platform, sf::Sprite levelEnd){
             if (this->xPosition <= 0 && this->xVelocity < 0){
                 this->xPosition = 0;
@@ -114,11 +89,6 @@ class Player: public Character
             this->levelEnded = checkEnd(levelEnd);
         }
 
-        /*
-        * This function is responsible for the cooldown of the jump
-        * @param void
-        * @return sf::Time
-        */
         sf::Time getJumpCooldown(){
             return this->jumpClock.getElapsedTime(); 
         }
@@ -234,11 +204,7 @@ class Player: public Character
             }
             return false;
         }
-        /*
-        * This function is responsible for the gravity of the player
-        * @param ground: the ground sprite
-        * @return void
-        */
+   
         void gravity(sf::Sprite ground, Platform platform){
             sf::FloatRect playerBounds = this->playerSprite.getGlobalBounds();
             sf::FloatRect platformBounds = platform.getGlobalBounds();
@@ -250,11 +216,6 @@ class Player: public Character
             }
         }
 
-        /*
-        * This function is responsible for the jumping of the player
-        * @param void
-        * @return void
-        */
         void jumping(){
             if(this->isJumping){
                 if(this->yPosition <= this->originalPlayerPosition - this->jumpHeight){

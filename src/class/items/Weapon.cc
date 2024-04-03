@@ -1,5 +1,6 @@
 #include <string>
 #include <iostream>
+#include "Weapon.hpp"
 
 using namespace std;
 

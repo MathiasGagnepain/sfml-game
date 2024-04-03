@@ -1,15 +1,12 @@
 #include <string>
 #include <iostream>
+#include "Collectable.hpp"
 
 using namespace std;
 
 
 class Collectable: public Item
 {
-    private:
-        sf::Texture collectable1Texture, collectable2Texture, collectable3Texture, collectable4Texture;
-        sf::Sprite collectable;
-
     public:
         int score;
         bool isEat = false;
@@ -82,4 +79,8 @@ class Collectable: public Item
             this->isEat = false;
             this->collectable.setColor(sf::Color::White);
         }
+
+    private:
+        sf::Texture collectable1Texture, collectable2Texture, collectable3Texture, collectable4Texture;
+        sf::Sprite collectable;
 };

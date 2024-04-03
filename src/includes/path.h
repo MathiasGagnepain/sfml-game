@@ -1,8 +1,8 @@
 # include <string>
 
 const string PLATFORM = "../src/assets/platform.png";
-const string PLAYER[] = {"../src/assets/Stickman.png", "../src/assets/animations/sticky/Stickman_idle_2.png", "../src/assets/animations/sticky/Stickman_idle_3.png"};
-const string ENEMY = "../src/assets/Stickman.png";
+const string PLAYER[] = {"../src/assets/animations/sticky/Stickman_idle_1.png", "../src/assets/animations/sticky/Stickman_idle_2.png", "../src/assets/animations/sticky/Stickman_idle_3.png"};
+const string ENEMY = "../src/assets/animations/sticky/Stickman_idle_1.png";
 const string BACKGROUND = "../src/assets/background.png";
 const string GROUND = "../src/assets/ground.png";
 const string LEVEL_END = "../src/assets/end.png";
