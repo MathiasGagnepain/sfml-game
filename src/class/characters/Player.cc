@@ -127,20 +127,35 @@ class Player: public Character
 
         void drawPlayer(sf::RenderWindow &window){
             if (this->isCrouching) {
-                this->playerTexture.loadFromFile("../src/assets/animations/sticky/stickman_crouching.png");
-                this->playerSprite.setTexture(playerTexture);
-            } else {
+                this->playerTexture.loadFromFile(PLAYER_CROUCHING);
+
+            } else if (this->xVelocity == 0) {
                 this->playerTexture.loadFromFile(PLAYER[this->animationIndex]);
-                this->playerSprite.setTexture(playerTexture);
-                if (animationCooldown.asSeconds() >= 0.2f) {
-                    animationClock.restart();
-                    if (this->animationIndex >= 2) {
-                        this->animationIndex = 0;
-                    } else {
-                        ++this->animationIndex;
-                    }
+          
+            } else if (this->xVelocity > 0) {
+                if (this->isJumping) {
+                    this->playerTexture.loadFromFile(PLAYER_JUMPING_RIGHT);
+                } else {
+                    this->playerTexture.loadFromFile(PLAYER_RIGHT_WALKING[this->animationIndex]);
+                }
+            } else if (this->xVelocity < 0) {
+                if (this->isJumping){
+                    this->playerTexture.loadFromFile(PLAYER_JUMPING_LEFT);
+                } else {
+                    this->playerTexture.loadFromFile(PLAYER_LEFT_WALKING[this->animationIndex]);
                 }
             }
+
+            if (animationCooldown.asSeconds() >= 0.1f) {
+                animationClock.restart();
+                if (this->animationIndex >= 2) {
+                    this->animationIndex = 0;
+                } else {
+                    ++this->animationIndex;
+                }
+            }
+
+            this->playerSprite.setTexture(playerTexture);
             this->playerSprite.setPosition(this->xPosition, this->yPosition);
             window.draw(this->playerSprite);
 
