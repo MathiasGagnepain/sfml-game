@@ -27,8 +27,8 @@ Game::Game(){
     this->collectable4 = new Collectable(4, 950, 425);
 
     this->player = new Player("Sticky");
-    this->enemy = new Enemy(500, 500, 1);
-    this->platform = new Platform(PLATFORM, 700.0f, 480.0f, 1.0f, 1.0f);
+    this->enemy = new Enemy(1200, this->ground.getPosition().y - 40, 1);
+    this->platform = new Platform(PLATFORM, 700.0f, 480.0f, 1.0f, 0.75f);
 
 }
 
@@ -72,8 +72,8 @@ void Game::resetGame(){
     this->collectable4->resetCollectable();
 
     this->platform->setPosition(700.0f, 480.0f);
-    this->enemy->setPosition(500, 500);
-    this->enemy->setOriginalXPosition(500);
+    this->enemy->setPosition(1200, this->ground.getPosition().y - 40);
+    this->enemy->setOriginalXPosition(1200);
     this->levelEnd.setPosition(2900.0f, 570.0f);
     this->collectable1->setPosition(700, 425);
     this->collectable2->setPosition(775, 425);
