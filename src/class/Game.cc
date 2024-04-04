@@ -16,6 +16,9 @@ class Game
         sf::Texture backgroundTexture, groundTexture, levelEndTexture;
         sf::Sprite background, ground, levelEnd;
         float offsetX = 0;
+        int levelSize = 3000;
+
+        float platformsPosition[2][2] = {{700.0f, 480.0f}, {800.0f, 550.0f}}; // TODO: Not implemented yet
 
     public:
 
@@ -32,7 +35,7 @@ class Game
             this->levelEndTexture.loadFromFile(LEVEL_END);
             this->levelEnd.setTexture(levelEndTexture);
             this->levelEnd.setScale(.2f,.2f);
-            this->levelEnd.setPosition(1100.0f, 570.0f);
+            this->levelEnd.setPosition(2900.0f, 570.0f);
 
             this->collectable1 = new Collectable(1, 700, 425);
             this->collectable2 = new Collectable(2, 775, 425);
@@ -41,7 +44,8 @@ class Game
 
             this->player = new Player("Sticky");
             this->enemy = new Enemy(500, 500, 1);
-            this->platform = new Platform(PLATFORM, 700.0f, 480.0f, 1.0f, .75f);
+            this->platform = new Platform(PLATFORM, 700.0f, 480.0f, 1.0f, 1.0f);
+
         }
 
         ~Game() {
@@ -55,21 +59,26 @@ class Game
         }
 
         void moveScenery(){
-            if ( (this->player->xVelocity != 0 && this->player->xPosition + this->player->xVelocity >= 500 - this->player->playerSprite.getTexture()->getSize().x * this->player->playerSprite.getScale().x) || (this->player->xVelocity != 0 && this->offsetX > 0)){
-                this->player->xPosition = 500 - this->player->playerSprite.getTexture()->getSize().x * this->player->playerSprite.getScale().x;
-                this->platform->setPosition(this->platform->getPosition()[0] - this->player->xVelocity, this->platform->getPosition()[1]);
-                this->enemy->setPosition(this->enemy->getPosition()[0] - this->player->xVelocity, this->enemy->getPosition()[1]);
-                this->levelEnd.setPosition(this->levelEnd.getPosition().x - this->player->xVelocity, this->levelEnd.getPosition().y);
+            if ( (this->player->xVelocity != 0 && this->player->xPosition + this->player->xVelocity >= 500 - this->player->playerSprite.getTexture()->getSize().x * this->player->playerSprite.getScale().x) || (this->player->xVelocity != 0 && this->offsetX > 0 )){
+                
+                if ((this->offsetX + SCREEN_WIDTH < this->levelSize && this->player->xVelocity > 0) || (this->offsetX > 0 && this->player->xVelocity < 0 && this->player->xPosition + this->player->xVelocity <= 500 - this->player->playerSprite.getTexture()->getSize().x * this->player->playerSprite.getScale().x)){
+                    this->player->xPosition = 500 - this->player->playerSprite.getTexture()->getSize().x * this->player->playerSprite.getScale().x;
+                    this->platform->setPosition(this->platform->getPosition()[0] - this->player->xVelocity, this->platform->getPosition()[1]);
+                    this->enemy->setPosition(this->enemy->getPosition()[0] - this->player->xVelocity, this->enemy->getPosition()[1]);
+                    this->levelEnd.setPosition(this->levelEnd.getPosition().x - this->player->xVelocity, this->levelEnd.getPosition().y);
 
-                this->collectable1->setPosition(this->collectable1->getPosition()[0] - this->player->xVelocity, this->collectable1->getPosition()[1]);
-                this->collectable2->setPosition(this->collectable2->getPosition()[0] - this->player->xVelocity, this->collectable2->getPosition()[1]);
-                this->collectable3->setPosition(this->collectable3->getPosition()[0] - this->player->xVelocity, this->collectable3->getPosition()[1]);
-                this->collectable4->setPosition(this->collectable4->getPosition()[0] - this->player->xVelocity, this->collectable4->getPosition()[1]);
+                    this->collectable1->setPosition(this->collectable1->getPosition()[0] - this->player->xVelocity, this->collectable1->getPosition()[1]);
+                    this->collectable2->setPosition(this->collectable2->getPosition()[0] - this->player->xVelocity, this->collectable2->getPosition()[1]);
+                    this->collectable3->setPosition(this->collectable3->getPosition()[0] - this->player->xVelocity, this->collectable3->getPosition()[1]);
+                    this->collectable4->setPosition(this->collectable4->getPosition()[0] - this->player->xVelocity, this->collectable4->getPosition()[1]);
 
-                this->offsetX += this->player->xVelocity;
-                this->enemy->setOriginalXPosition(this->enemy->getOriginalXPosition() - this->player->xVelocity);
+                    this->offsetX += this->player->xVelocity;
+                    this->enemy->setOriginalXPosition(this->enemy->getOriginalXPosition() - this->player->xVelocity);
+                }
             } else if (this->player->xPosition <= 0) {
                 this->player->xPosition = 0;
+            } else if (this->player->xPosition + this->player->playerSprite.getTexture()->getSize().x * this->player->playerSprite.getScale().x >= SCREEN_WIDTH) {
+                this->player->xPosition = SCREEN_WIDTH - this->player->playerSprite.getTexture()->getSize().x * this->player->playerSprite.getScale().x;
             }
             this->player->physics(this->ground, this->platform, this->levelEnd);
         }
@@ -91,7 +100,7 @@ class Game
             this->platform->setPosition(700.0f, 480.0f);
             this->enemy->setPosition(500, 500);
             this->enemy->setOriginalXPosition(500);
-            this->levelEnd.setPosition(1100.0f, 570.0f);
+            this->levelEnd.setPosition(2900.0f, 570.0f);
             this->collectable1->setPosition(700, 425);
             this->collectable2->setPosition(775, 425);
             this->collectable3->setPosition(850, 425);

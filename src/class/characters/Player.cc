@@ -83,6 +83,10 @@ class Player: public Character
             if (this->xPosition <= 0 && this->xVelocity < 0){
                 this->xPosition = 0;
                 this->xVelocity = 0;
+            } else if (this->xPosition - this->playerSprite.getTexture()->getSize().x >= SCREEN_WIDTH && this->xVelocity > 0){
+                this->xPosition = SCREEN_WIDTH - this->playerSprite.getTexture()->getSize().x;
+                this->xVelocity = 0;
+
             }
             this->xPosition += this->xVelocity;
             jumping();
