@@ -80,7 +80,7 @@ class Player: public Character
             this->xVelocity = 0;
         }
 
-        void physics(sf::Sprite ground, Platform platform, sf::Sprite levelEnd){
+        void physics(sf::Sprite ground, Platform* platform, sf::Sprite levelEnd){
             if (this->xPosition <= 0 && this->xVelocity < 0){
                 this->xPosition = 0;
                 this->xVelocity = 0;
@@ -217,9 +217,9 @@ class Player: public Character
             return false;
         }
    
-        void gravity(sf::Sprite ground, Platform platform){
+        void gravity(sf::Sprite ground, Platform* platform){
             sf::FloatRect playerBounds = this->playerSprite.getGlobalBounds();
-            sf::FloatRect platformBounds = platform.getGlobalBounds();
+            sf::FloatRect platformBounds = platform->getGlobalBounds();
 
             float playerHeight = this->playerSprite.getTexture()->getSize().y * this->playerSprite.getScale().y;
 

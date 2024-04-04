@@ -9,10 +9,7 @@ using namespace std;
 // custom
 
 #include "includes/path.hpp"
-#include "class/Platform.cc"
-#include "class/characters/Character.cc"
-#include "class/characters/Player.cc"
-#include "class/characters/Enemy.cc"
+
 #include "class/display/Text.cc"
 
 #include "includes/main.hpp"
@@ -31,36 +28,6 @@ int main()
     }
     window.setIcon(image.getSize().x, image.getSize().y, image.getPixelsPtr());
 
-    // Background
-    sf::Texture backgroundTexture;
-    sf::Sprite background;
-
-    backgroundTexture.loadFromFile(BACKGROUND);
-    background.setTexture(backgroundTexture);
-    background.setScale(2.0f,2.0f);
-
-    // Ground
-    sf::Texture groundTexture;
-    sf::Sprite ground;
-
-    groundTexture.loadFromFile(GROUND);
-    ground.setTexture(groundTexture);
-    ground.setScale(2.0f,1.0f);
-    ground.setPosition(0.0f, 600.0f);
-
-    // Level End
-    sf::Texture levelEndTexture;
-    sf::Sprite levelEnd;
-    levelEndTexture.loadFromFile(LEVEL_END);
-    levelEnd.setTexture(levelEndTexture);
-    levelEnd.setScale(.2f,.2f);
-    levelEnd.setPosition(1100.0f, 570.0f);
-
-    // Platform
-    Platform platform(PLATFORM, 700.0f, 480.0f, 1.0f, .75f);
-
-    Enemy enemy(500, 500, 1);
-    Player player("Sticky");
     Weapon weapon(1, 10, false, 300, 500), shield(2, 5, true, 400, 500);
     Text text;
     Game game;
@@ -86,18 +53,18 @@ int main()
             if(!gameIsStarted){
                 gameIsStarted = true;
             }
-            else if (player.levelEnded or player.healthPoints <= 0){
+            else if (game.getPlayer()->levelEnded or game.getPlayer()->healthPoints <= 0){
                 gameIsStarted = false;
-                player.levelEnded = false;
-                player.resetPosition();
-                player.healthPoints = 100;
+                game.getPlayer()->levelEnded = false;
+                game.getPlayer()->resetPosition();
+                game.getPlayer()->healthPoints = 100;
                 weapon.resetWeapon();
                 shield.resetWeapon();
-                enemy.resetEnemy();
+                game.getEnemy()->resetEnemy();
                 game.resetGame();
             }
         }
-        if (gameIsStarted && !player.levelEnded && player.healthPoints > 0) {
+        if (gameIsStarted && !game.getPlayer()->levelEnded && game.getPlayer()->healthPoints > 0) {
             if(sf::Keyboard::isKeyPressed(sf::Keyboard::P) && keypressedCooldown.asSeconds() >= .5f){
                 keypressedClock.restart();
                 gameIsPaused = !gameIsPaused;
@@ -105,20 +72,20 @@ int main()
             
             if(!gameIsPaused){
                 if(sf::Keyboard::isKeyPressed(sf::Keyboard::Right) || sf::Keyboard::isKeyPressed(sf::Keyboard::D)){
-                    player.moveRight();
+                    game.getPlayer()->moveRight();
                 }
                 if(sf::Keyboard::isKeyPressed(sf::Keyboard::Left) || sf::Keyboard::isKeyPressed(sf::Keyboard::Q)){
-                    player.moveLeft();
+                    game.getPlayer()->moveLeft();
                 }
-                if((sf::Keyboard::isKeyPressed(sf::Keyboard::Up) || sf::Keyboard::isKeyPressed(sf::Keyboard::Z)) && !player.isJumping && player.getJumpCooldown().asSeconds() >= .5f){
-                    player.jump();
+                if((sf::Keyboard::isKeyPressed(sf::Keyboard::Up) || sf::Keyboard::isKeyPressed(sf::Keyboard::Z)) && !game.getPlayer()->isJumping && game.getPlayer()->getJumpCooldown().asSeconds() >= .5f){
+                    game.getPlayer()->jump();
                 }
-                if((sf::Keyboard::isKeyPressed(sf::Keyboard::Down) || sf::Keyboard::isKeyPressed(sf::Keyboard::S)) && player.yPosition < ground.getPosition().y - 20){
-                    player.crouch(ground);
+                if((sf::Keyboard::isKeyPressed(sf::Keyboard::Down) || sf::Keyboard::isKeyPressed(sf::Keyboard::S)) && game.getPlayer()->yPosition < game.getGroundPosition()[1] - 20){
+                    game.getPlayer()->crouch(game.getGround());
                 }
                 if(sf::Keyboard::isKeyPressed(sf::Keyboard::F) && keypressedCooldown.asSeconds() >= .5f){
                     keypressedClock.restart();
-                    player.selectSlot();
+                    game.getPlayer()->selectSlot();
 
                 }
             }
@@ -126,43 +93,32 @@ int main()
 
         window.clear();
 
-        game.moveScenery(window, platform, player, enemy, levelEnd);
-        
-        player.physics(ground, platform, levelEnd);
+        game.moveScenery(window);
 
-        window.draw(background);
-        window.draw(ground);
-        window.draw(platform.getPlatform());
-        window.draw(levelEnd);
-        window.draw(text.getGameScoreText(player.getScore()));
+        game.drawGame(window);
+
+        window.draw(text.getGameScoreText(game.getPlayer()->getScore()));
 
 
-        player.drawHealthBar(window);
-
-        player.drawPlayer(window);
-
-        game.drawGame(window, player);
-
-        enemy.drawEnemy(window, player);
-        weapon.drawWeapon(window, player);
-        shield.drawWeapon(window, player);
+        weapon.drawWeapon(window, game.getPlayer());
+        shield.drawWeapon(window, game.getPlayer());
 
         // Text
         if(!gameIsStarted){
             window.draw(text.getStartingText());
-        } else if (player.levelEnded) {
+        } else if (game.getPlayer()->levelEnded) {
             window.draw(text.getGameEndedText());
         }
         if(gameIsPaused){
            window.draw(text.getPausedText());
         }
-        if(player.healthPoints <= 0){
+        if(game.getPlayer()->healthPoints <= 0){
             window.draw(text.getGameOverText());
-            player.xVelocity = 0;
-            player.yVelocity = 0;
+            game.getPlayer()->xVelocity = 0;
+            game.getPlayer()->yVelocity = 0;
         }
-        if (player.isCrouching) {
-            player.isCrouching = false;
+        if (game.getPlayer()->isCrouching) {
+            game.getPlayer()->isCrouching = false;
         }
         
         window.display();

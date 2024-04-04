@@ -29,17 +29,17 @@ class Enemy: public Character
             }
         }
 
-        void playerCollide(Player &player){
-            if(this->enemySprite.getGlobalBounds().intersects(player.getGlobalBounds())){
-                if (player.inventory[player.selectedSlot] != 2) {
-                    player.healthPoints -= getDamage();
+        void playerCollide(Player* player){
+            if(this->enemySprite.getGlobalBounds().intersects(player->getGlobalBounds())){
+                if (player->inventory[player->selectedSlot] != 2) {
+                    player->healthPoints -= getDamage();
                     attack(player);
                 }
-                player.xVelocity > 0 ? player.xPosition -= this->knockBack : player.xPosition += this->knockBack;
+                player->xVelocity > 0 ? player->xPosition -= this->knockBack : player->xPosition += this->knockBack;
             }
         }
 
-        void drawEnemy(sf::RenderWindow &window, Player &player){
+        void drawEnemy(sf::RenderWindow &window, Player* player){
             if (this->xPosition != this->originalXPosition) {
                 if (this->xPosition > this->originalXPosition) {
                     this->xPosition -= 1;
@@ -50,7 +50,7 @@ class Enemy: public Character
             }
             if (this->healthPoints > 0) {
 
-                if (player.xPosition < this->xPosition) {
+                if (player->xPosition < this->xPosition) {
                     this->enemyTexture.loadFromFile(ENEMY_IDLE_LEFT[this->animationIndex]);
                 }
                 else {
@@ -126,17 +126,17 @@ class Enemy: public Character
             return damage;
         }
 
-        void attack(Player &player){
+        void attack(Player* player){
 
-            if (player.inventory[player.selectedSlot] == 1) {
+            if (player->inventory[player->selectedSlot] == 1) {
                 if (this->originalXPosition == this->xPosition){
                     this->originalXPosition = this->xPosition;
                 }
                 this->healthPoints -= 2; //player.inventory[player.selectedSlot].damage;
                 if (this->healthPoints <= 0) {
-                    player.setScore(player.getScore() + 100);
+                    player->setScore(player->getScore() + 100);
                 }
             }
-            player.xVelocity > 0 ? this->xPosition += this->knockBack/4 : this->xPosition -= this->knockBack/4;
+            player->xVelocity > 0 ? this->xPosition += this->knockBack/4 : this->xPosition -= this->knockBack/4;
         }
 };

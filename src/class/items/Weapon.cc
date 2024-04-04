@@ -26,7 +26,7 @@ class Weapon: public Item
             this->yPosition = y;
         }
 
-        void drawWeapon(sf::RenderWindow &window, Player &player){
+        void drawWeapon(sf::RenderWindow &window, Player* player){
             if (this->id == 1) {
                 this->weaponTexture.loadFromFile(ATTACK_WEAPON);
             } else {
@@ -40,12 +40,12 @@ class Weapon: public Item
             playerCollide(player);
         }
 
-        void playerCollide(Player &player){
-            if(this->weaponSprite.getGlobalBounds().intersects(player.getGlobalBounds())){
-                if (player.inventory[0] != 0 && player.inventory[0] != this->id) {
-                    player.inventory[1] = this->id;
+        void playerCollide(Player* player){
+            if(this->weaponSprite.getGlobalBounds().intersects(player->getGlobalBounds())){
+                if (player->inventory[0] != 0 && player->inventory[0] != this->id) {
+                    player->inventory[1] = this->id;
                 } else {
-                    player.inventory[0] = this->id;
+                    player->inventory[0] = this->id;
                 }
                 this->weaponSprite.setPosition(-100, -100);
                 this->weaponSprite.setColor(sf::Color::Transparent);

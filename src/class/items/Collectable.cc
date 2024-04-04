@@ -24,8 +24,8 @@ class Collectable: public Item
             this->collectable4Texture.loadFromFile(COLLECTABLE4);
         }
 
-        void collectCoin(Player &player){
-            this->score = player.getScore();
+        void collectCoin(Player* player){
+            this->score = player->getScore();
             if(this->type == 1){
                 this->score += 10;
             }else if(this->type == 2){
@@ -37,10 +37,10 @@ class Collectable: public Item
             }else {
                 this->score += 0;
             }
-            player.setScore(this->score);
+            player->setScore(this->score);
         }
 
-        void drawCollectable(sf::RenderWindow &window, Player &player){
+        void drawCollectable(sf::RenderWindow &window, Player* player){
 
             switch (this->type)
             {   
@@ -69,8 +69,8 @@ class Collectable: public Item
             }
         }
 
-        void collideWithPlayer(Player &player){
-            if(player.getGlobalBounds().intersects(collectable.getGlobalBounds()) && !this->isEat){
+        void collideWithPlayer(Player* player){
+            if(player->getGlobalBounds().intersects(collectable.getGlobalBounds()) && !this->isEat){
                 this->collectable.setColor(sf::Color::Transparent);
                 collectCoin(player);
                 this->isEat = true;
