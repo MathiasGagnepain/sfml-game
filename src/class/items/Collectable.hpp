@@ -1,43 +1,74 @@
-//  ╔══════════════════════════════════════════════════════════════════════════════╗
-//  ║                          ● Public Functions ●                                ║
-//  ║                                                                              ║
-//  ║                             • • • • • • • •                                  ║
-//  ╚══════════════════════════════════════════════════════════════════════════════╝
+#pragma once
 
-/*
-* This function is responsible for the collection of the coin
-* @param player: the player object
-* @return void
-*/
-void collectCoin(Player &player);
+#include <string>
+#include <iostream>
+#include <array>
 
-/*
-* This function is responsible for the drawing of the collectable
-* @param x: the x position of the collectable
-* @param y: the y position of the collectable
-* @param window: the window to draw the collectable
-* @param player: the player object
-* @return void
-*/
-void drawCollectable(float x, float y, sf::RenderWindow &window, Player &player);
+using namespace std;
 
-/*
-* This function is responsible for the collision of the player with the collectable
-* @param player: the player object
-* @return void
-*/
-void collideWithPlayer(Player &player);
 
-/*
-* This function is responsible for the resetting of the collectable
-* @param void
-* @return void
-*/
-void resetCollectable();
+class Collectable : public Item
+{
+    private:
+        sf::Texture collectable1Texture, collectable2Texture, collectable3Texture, collectable4Texture;
+        sf::Sprite collectable;
+        float xPosition, yPosition;
 
-//  ╔══════════════════════════════════════════════════════════════════════════════╗
-//  ║                          ● Private Functions ●                               ║
-//  ║                                                                              ║
-//  ║                             • • • • • • • •                                  ║
-//  ╚══════════════════════════════════════════════════════════════════════════════╝
+    public:
+        int score;
+        bool isEat = false;
+        bool isResetter;
+        int type;
 
+        /*
+        * Constructor
+        * @param type : the type of the collectable
+        * @param x : x position of the collectable
+        * @param y : y position of the collectable
+        */
+        Collectable(int type, float x, float y);
+
+        /*
+        * Collect the coin
+        * @param player : the player object
+        * @return void
+        */
+        void collectCoin(Player* player);
+
+        /*
+        * Draw the collectable on the screen
+        * @param window : the window to draw the collectable on
+        * @param player : the player object
+        * @return void
+        */
+        void drawCollectable(sf::RenderWindow &window, Player* player);
+
+        /*
+        * Collide with the player
+        * @param player : the player object
+        * @return void
+        */
+        void collideWithPlayer(Player* player);
+
+        /*
+        * Reset the collectable to its original position
+        * @param void
+        * @return void
+        */
+        void resetCollectable();
+
+        /*
+        * Set the position of the collectable
+        * @param x : x position of the collectable
+        * @param y : y position of the collectable
+        * @return void
+        */
+        void setPosition(float x, float y);
+
+        /*
+        * Get the position of the collectable
+        * @param void
+        * @return array<float, 2>
+        */
+        array<float, 2> getPosition();
+};

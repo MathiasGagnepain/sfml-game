@@ -1,34 +1,52 @@
-//  ╔══════════════════════════════════════════════════════════════════════════════╗
-//  ║                          ● Public Functions ●                                ║
-//  ║                                                                              ║
-//  ║                             • • • • • • • •                                  ║
-//  ╚══════════════════════════════════════════════════════════════════════════════╝
+#pragma once
 
-/*
-* This function is responsible for the drawing of the weapon
-* @param window: the window to draw the weapon
-* @param player: the player object
-* @return void
-*/
-void drawWeapon(sf::RenderWindow &window, Player &player);
+#include <string>
+#include <iostream>
 
-/*
-* This function is responsible for the collision of the player with the weapon
-* @param player: the player object
-* @return void
-*/
-void playerCollide(Player &player);
+using namespace std;
 
-/*
-* This function is responsible for the resetting of the weapon
-* @param void
-* @return void
-*/
-void resetWeapon();
+class Weapon: public Item
+{
+    private:
+        sf::Texture weaponTexture;
+        sf::Sprite weaponSprite;
 
-//  ╔══════════════════════════════════════════════════════════════════════════════╗
-//  ║                          ● Private Functions ●                               ║
-//  ║                                                                              ║
-//  ║                             • • • • • • • •                                  ║
-//  ╚══════════════════════════════════════════════════════════════════════════════╝
+    public:
+        int id;
+        int damage;
+        bool isDefense;
+        float xPosition, yPosition;
 
+        /*
+        * Constructor
+        * @param id : the id of the weapon
+        * @param damage : the damage of the weapon
+        * @param isDefense : the type of the weapon
+        * @param x : x position of the weapon
+        * @param y : y position of the weapon
+        * @return void
+        */
+        Weapon(int id, int damage, bool isDefense, float x, float y);
+
+        /*
+        * Draw weapon
+        * @param window : the window to draw the weapon on
+        * @param player : the player object
+        * @return void
+        */
+        void drawWeapon(sf::RenderWindow &window, Player* player);
+
+        /*
+        * Collide with the player
+        * @param player : the player object
+        * @return void
+        */
+        void playerCollide(Player* player);
+
+        /*
+        * Reset weapon
+        * @param void
+        * @return void
+        */
+        void resetWeapon();
+};

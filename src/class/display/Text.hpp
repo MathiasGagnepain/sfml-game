@@ -1,81 +1,94 @@
-//  ╔══════════════════════════════════════════════════════════════════════════════╗
-//  ║                          ● Public Functions ●                                ║
-//  ║                                                                              ║
-//  ║                             • • • • • • • •                                  ║
-//  ╚══════════════════════════════════════════════════════════════════════════════╝
+#pragma once
 
-/*
-* This function is responsible for the setting of the game over text
-* @param void
-* @return void
-*/
-sf::Text getGameOverText();
+#include <string>
+#include <iostream>
 
-/*
-* This function is responsible for the setting of the starting text
-* @param void
-* @return void
-*/
-sf::Text getStartingText();
+class Text 
+{
+    private:
+        // Text
+        sf::Text startingText;
+        sf::Text pauseText;
+        sf::Text gameoverText;
+        sf::Text gameEndedText;
+        sf::Text gameScoreText;
 
-/*
-* This function is responsible for the setting of the paused text
-* @param void
-* @return void
-*/
-sf::Text getPausedText();
+        sf::Font font;
 
-/*
-* This function is responsible for the setting of the game ended text
-* @param void
-* @return void
-*/
-sf::Text getGameEndedText();
+        /*
+        * Load the game over text
+        * @param void
+        * @return void
+        */
+        void loadGameOverText();
 
-/*
-* This function is responsible for the setting of the game score text
-* @param score: the score of the game
-* @return void
-*/
-sf::Text getGameScoreText(int score);
+        /*
+        * Load the starting text
+        * @param void
+        * @return void
+        */
+        void loadStartingText();
 
-//  ╔══════════════════════════════════════════════════════════════════════════════╗
-//  ║                          ● Private Functions ●                               ║
-//  ║                                                                              ║
-//  ║                             • • • • • • • •                                  ║
-//  ╚══════════════════════════════════════════════════════════════════════════════╝
+        /*
+        * Load the paused text
+        * @param void
+        * @return void
+        */
+        void loadPausedText();
+    
+        /*
+        * Load the game ended text
+        * @param void
+        * @return void
+        */
+        void loadGameEndedText();
 
-/*
-* This function is responsible for the loading of the game over text
-* @param void
-* @return void
-*/
-void loadGameOverText();
+        /*
+        * Load the game score text
+        * @param void
+        * @return void
+        */
+        void loadGameScoreText();
 
-/*
-* This function is responsible for the loading of the starting text
-* @param void
-* @return void
-*/
-void loadStartingText();
+    public:
 
-/*
-* This function is responsible for the loading of the paused text
-* @param void
-* @return void
-*/
-void loadPausedText();
+        /*
+        * Constructor
+        */
+        Text();
 
-/*
-* This function is responsible for the loading of the game ended text
-* @param void
-* @return void
-*/
-void loadGameEndedText();
+        /*
+        * the function returns the game over text
+        * @param void
+        * @return sf::Text
+        */
+        sf::Text getGameOverText();
 
-/*
-* This function is responsible for the loading of the game score text
-* @param void
-* @return void
-*/
-void loadGameScoreText();
+        /*
+        * the function returns the starting text
+        * @param void
+        * @return sf::Text
+        */
+        sf::Text getStartingText();
+
+        /*
+        * the function returns the paused text
+        * @param void
+        * @return sf::Text
+        */
+        sf::Text getPausedText();
+
+        /*
+        * the function returns the game ended text
+        * @param void
+        * @return sf::Text
+        */
+        sf::Text getGameEndedText();
+
+        /*
+        * the function returns the game score text
+        * @param score : the score of the game
+        * @return sf::Text
+        */
+        sf::Text getGameScoreText(int score);
+};
