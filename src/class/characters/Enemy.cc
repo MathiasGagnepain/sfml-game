@@ -11,7 +11,6 @@ class Enemy: public Character
     public:
         // 1 : Fighter, 2 : Warrior, 3 : Ranger
         int type;
-        int healthPoints;
 
         Enemy(float x, float y, int type){
             this->type = type;
@@ -29,14 +28,8 @@ class Enemy: public Character
             }
         }
 
-        void playerCollide(Player* player){
-            if(this->enemySprite.getGlobalBounds().intersects(player->getGlobalBounds())){
-                if (player->inventory[player->selectedSlot] != 2) {
-                    player->healthPoints -= getDamage();
-                    attack(player);
-                }
-                player->xVelocity > 0 ? player->xPosition -= this->knockBack : player->xPosition += this->knockBack;
-            }
+        sf::Sprite getEnemySprite(){
+            return this->enemySprite;
         }
 
         void drawEnemy(sf::RenderWindow &window, Player* player){
@@ -60,8 +53,6 @@ class Enemy: public Character
                 this->enemySprite.setScale(sf::Vector2f(0.2f, 0.2f));
                 this->enemySprite.setColor(sf::Color::Red);
                 this->enemySprite.setPosition(this->xPosition, this->yPosition);
-
-                playerCollide(player);
 
                 window.draw(this->enemySprite);
 
@@ -94,17 +85,23 @@ class Enemy: public Character
             return position;
         }
 
-    private:
-        sf::Texture enemyTexture;
-        sf::Sprite enemySprite;
-        int knockBack = 250;
-        float xPosition = 0;
-        float yPosition = 0;
-        float originalXPosition = 0;
-        int animationIndex = 0;
+        int getKnockBack(){
+            return this->knockBack;
+        }
 
-        sf::Clock animationClock;
-        sf::Time animationCooldown;
+        void attack(Player* player){
+
+            if (player->inventory[player->selectedSlot] == 1) {
+                if (this->originalXPosition == this->xPosition){
+                    this->originalXPosition = this->xPosition;
+                }
+                this->healthPoints -= 2; //player.inventory[player.selectedSlot].damage;
+                if (this->healthPoints <= 0) {
+                    player->setScore(player->getScore() + 100);
+                }
+            }
+            player->xVelocity > 0 ? this->xPosition += this->knockBack/4 : this->xPosition -= this->knockBack/4;
+        }
 
         int getDamage(){
             int damage = 0;
@@ -126,17 +123,30 @@ class Enemy: public Character
             return damage;
         }
 
-        void attack(Player* player){
-
-            if (player->inventory[player->selectedSlot] == 1) {
-                if (this->originalXPosition == this->xPosition){
-                    this->originalXPosition = this->xPosition;
-                }
-                this->healthPoints -= 2; //player.inventory[player.selectedSlot].damage;
-                if (this->healthPoints <= 0) {
-                    player->setScore(player->getScore() + 100);
-                }
-            }
-            player->xVelocity > 0 ? this->xPosition += this->knockBack/4 : this->xPosition -= this->knockBack/4;
+        int getHealthPoints(){
+            return this->healthPoints;
         }
+
+        float getOriginalXPosition(){
+            return this->originalXPosition;
+        }
+
+        void setOriginalXPosition(float x){
+            this->originalXPosition = x;
+        }
+
+    private:
+        sf::Texture enemyTexture;
+        sf::Sprite enemySprite;
+        int knockBack = 250;
+        float xPosition = 0;
+        float yPosition = 0;
+        float originalXPosition = 0;
+        int animationIndex = 0;
+        int healthPoints;
+
+        sf::Clock animationClock;
+        sf::Time animationCooldown;
+
+        
 };

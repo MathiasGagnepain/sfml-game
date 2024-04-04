@@ -15,6 +15,7 @@ class Game
         Collectable* collectable1, *collectable2, *collectable3, *collectable4;
         sf::Texture backgroundTexture, groundTexture, levelEndTexture;
         sf::Sprite background, ground, levelEnd;
+        float offsetX = 0;
 
     public:
 
@@ -53,45 +54,51 @@ class Game
             delete this->platform;
         }
 
-        void moveScenery(sf::RenderWindow &window){
-            if (this->player->xVelocity != 0 && this->player->xPosition + this->player->xVelocity >= 500 - this->player->playerSprite.getTexture()->getSize().x * this->player->playerSprite.getScale().x){
+        void moveScenery(){
+            if ( (this->player->xVelocity != 0 && this->player->xPosition + this->player->xVelocity >= 500 - this->player->playerSprite.getTexture()->getSize().x * this->player->playerSprite.getScale().x) || (this->player->xVelocity != 0 && this->offsetX > 0)){
                 this->player->xPosition = 500 - this->player->playerSprite.getTexture()->getSize().x * this->player->playerSprite.getScale().x;
                 this->platform->setPosition(this->platform->getPosition()[0] - this->player->xVelocity, this->platform->getPosition()[1]);
                 this->enemy->setPosition(this->enemy->getPosition()[0] - this->player->xVelocity, this->enemy->getPosition()[1]);
                 this->levelEnd.setPosition(this->levelEnd.getPosition().x - this->player->xVelocity, this->levelEnd.getPosition().y);
 
-                // TODO: refactor this
                 this->collectable1->setPosition(this->collectable1->getPosition()[0] - this->player->xVelocity, this->collectable1->getPosition()[1]);
                 this->collectable2->setPosition(this->collectable2->getPosition()[0] - this->player->xVelocity, this->collectable2->getPosition()[1]);
                 this->collectable3->setPosition(this->collectable3->getPosition()[0] - this->player->xVelocity, this->collectable3->getPosition()[1]);
                 this->collectable4->setPosition(this->collectable4->getPosition()[0] - this->player->xVelocity, this->collectable4->getPosition()[1]);
 
-                this->player->offsetX += 1;
-            } else if (this->player->xVelocity != 0 && this->player->offsetX > 0){
-                this->player->xPosition = 500 - this->player->playerSprite.getTexture()->getSize().x * this->player->playerSprite.getScale().x;
-                this->platform->setPosition(this->platform->getPosition()[0] - this->player->xVelocity, this->platform->getPosition()[1]);
-                this->enemy->setPosition(this->enemy->getPosition()[0] - this->player->xVelocity, this->enemy->getPosition()[1]);
-                this->levelEnd.setPosition(this->levelEnd.getPosition().x - this->player->xVelocity, this->levelEnd.getPosition().y);
-                
-                // TODO: refactor this
-                this->collectable1->setPosition(this->collectable1->getPosition()[0] - this->player->xVelocity, this->collectable1->getPosition()[1]);
-                this->collectable2->setPosition(this->collectable2->getPosition()[0] - this->player->xVelocity, this->collectable2->getPosition()[1]);
-                this->collectable3->setPosition(this->collectable3->getPosition()[0] - this->player->xVelocity, this->collectable3->getPosition()[1]);
-                this->collectable4->setPosition(this->collectable4->getPosition()[0] - this->player->xVelocity, this->collectable4->getPosition()[1]);
-
-                this->player->offsetX -= 1;
+                this->offsetX += this->player->xVelocity;
+                this->enemy->setOriginalXPosition(this->enemy->getOriginalXPosition() - this->player->xVelocity);
             } else if (this->player->xPosition <= 0) {
                 this->player->xPosition = 0;
             }
-            
             this->player->physics(this->ground, this->platform, this->levelEnd);
         }
 
         void resetGame(){
+            // gameIsStarted = false;
+            this->player->levelEnded = false;
+            this->player->resetPosition();
+            this->player->healthPoints = 100;
+            // weapon.resetWeapon();
+            // shield.resetWeapon();
+            this->enemy->resetEnemy();
+
             this->collectable1->resetCollectable();
             this->collectable2->resetCollectable();
             this->collectable3->resetCollectable();
             this->collectable4->resetCollectable();
+
+            this->platform->setPosition(700.0f, 480.0f);
+            this->enemy->setPosition(500, 500);
+            this->enemy->setOriginalXPosition(500);
+            this->levelEnd.setPosition(1100.0f, 570.0f);
+            this->collectable1->setPosition(700, 425);
+            this->collectable2->setPosition(775, 425);
+            this->collectable3->setPosition(850, 425);
+            this->collectable4->setPosition(950, 425);
+            this->offsetX = 0;
+
+            this->player->isJumping = false;
         }
 
         array<float, 2> getGroundPosition(){
@@ -127,10 +134,23 @@ class Game
             this->collectable4->drawCollectable(window, this->player);
 
             this->enemy->drawEnemy(window, this->player);
+            if (this->enemy->getHealthPoints()) {
+                this->playerCollide();
+            }
             this->player->drawPlayer(window);
             
-
             // HUD
             this->player->drawHealthBar(window);
+        }
+
+        void playerCollide(){
+            if(this->enemy->getEnemySprite().getGlobalBounds().intersects(this->player->getGlobalBounds())){
+                if (this->player->inventory[this->player->selectedSlot] != 2) {
+                    this->player->healthPoints -= this->enemy->getDamage();
+                    this->enemy->attack(this->player);
+                }
+                this->player->xVelocity > 0 && this->offsetX <= 0 ? this->player->xPosition -= this->enemy->getKnockBack() : this->player->xPosition += this->enemy->getKnockBack();
+                this->player->xVelocity > 0 && this->offsetX > 0 ? this->offsetX - this->enemy->getKnockBack() : this->offsetX + this->enemy->getKnockBack();
+            }
         }
 };

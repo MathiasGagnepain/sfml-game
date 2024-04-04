@@ -16,7 +16,6 @@ class Player: public Character
         bool isCrouching = false;
         bool isMiddleScreen = false;
         float originalPlayerPosition = 0;
-        float offsetX = 0;
         int selectedSlot = 0;
         int animationIndex = 0;
 

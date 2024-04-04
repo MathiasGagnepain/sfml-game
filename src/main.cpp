@@ -55,12 +55,9 @@ int main()
             }
             else if (game.getPlayer()->levelEnded or game.getPlayer()->healthPoints <= 0){
                 gameIsStarted = false;
-                game.getPlayer()->levelEnded = false;
-                game.getPlayer()->resetPosition();
-                game.getPlayer()->healthPoints = 100;
                 weapon.resetWeapon();
                 shield.resetWeapon();
-                game.getEnemy()->resetEnemy();
+
                 game.resetGame();
             }
         }
@@ -93,7 +90,7 @@ int main()
 
         window.clear();
 
-        game.moveScenery(window);
+        game.moveScenery();
 
         game.drawGame(window);
 
