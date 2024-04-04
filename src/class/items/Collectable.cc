@@ -13,8 +13,10 @@ class Collectable: public Item
         bool isResetter;
         int type;
 
-        Collectable(int type){
+        Collectable(int type, float x, float y){
             this->type = type;
+            this->xPosition = x;
+            this->yPosition = y;
 
             this->collectable1Texture.loadFromFile(COLLECTABLE1);
             this->collectable2Texture.loadFromFile(COLLECTABLE2);
@@ -22,8 +24,8 @@ class Collectable: public Item
             this->collectable4Texture.loadFromFile(COLLECTABLE4);
         }
 
-        void collectCoin(Player &player){
-            this->score = player.getScore();
+        void collectCoin(Player* player){
+            this->score = player->getScore();
             if(this->type == 1){
                 this->score += 10;
             }else if(this->type == 2){
@@ -35,10 +37,10 @@ class Collectable: public Item
             }else {
                 this->score += 0;
             }
-            player.setScore(this->score);
+            player->setScore(this->score);
         }
 
-        void drawCollectable(float x, float y, sf::RenderWindow &window, Player &player){
+        void drawCollectable(sf::RenderWindow &window, Player* player){
 
             switch (this->type)
             {   
@@ -58,7 +60,7 @@ class Collectable: public Item
                     break;
             }
             this->collectable.setScale(.1f,.1f);
-            this->collectable.setPosition(x, y);
+            this->collectable.setPosition(this->xPosition, this->yPosition);
 
             collideWithPlayer(player);
 
@@ -67,8 +69,8 @@ class Collectable: public Item
             }
         }
 
-        void collideWithPlayer(Player &player){
-            if(player.getGlobalBounds().intersects(collectable.getGlobalBounds()) && !this->isEat){
+        void collideWithPlayer(Player* player){
+            if(player->getGlobalBounds().intersects(collectable.getGlobalBounds()) && !this->isEat){
                 this->collectable.setColor(sf::Color::Transparent);
                 collectCoin(player);
                 this->isEat = true;
@@ -80,7 +82,17 @@ class Collectable: public Item
             this->collectable.setColor(sf::Color::White);
         }
 
+        void setPosition(float x, float y){
+            this->xPosition = x;
+            this->yPosition = y;
+        }
+
+        array<float, 2> getPosition(){
+            return {this->xPosition, this->yPosition};
+        }
+
     private:
         sf::Texture collectable1Texture, collectable2Texture, collectable3Texture, collectable4Texture;
         sf::Sprite collectable;
+        float xPosition, yPosition;
 };

@@ -1,7 +1,6 @@
 # include <string>
 
 const string PLATFORM = "../src/assets/platform.png";
-const string ENEMY = "../src/assets/animations/sticky/Stickman_idle_1.png";
 const string BACKGROUND = "../src/assets/background.png";
 const string GROUND = "../src/assets/ground.png";
 const string LEVEL_END = "../src/assets/end.png";
@@ -22,3 +21,7 @@ const string PLAYER_RIGHT_WALKING[] = {"../src/assets/animations/sticky/Stickman
 const string PLAYER_CROUCHING = "../src/assets/animations/sticky/stickman_crouching.png";
 const string PLAYER_JUMPING_LEFT = "../src/assets/animations/sticky/stickman_jumping_left_1.png";
 const string PLAYER_JUMPING_RIGHT = "../src/assets/animations/sticky/stickman_jumping_right_1.png";
+
+// Enemies
+const string ENEMY_IDLE_LEFT[] = {"../src/assets/animations/sticky/Stickman_idle_fight_left_1.png", "../src/assets/animations/sticky/Stickman_idle_fight_left_2.png", "../src/assets/animations/sticky/Stickman_idle_fight_left_3.png"};
+const string ENEMY_IDLE_RIGHT[] = {"../src/assets/animations/sticky/Stickman_idle_fight_right_1.png", "../src/assets/animations/sticky/Stickman_idle_fight_right_2.png", "../src/assets/animations/sticky/Stickman_idle_fight_right_3.png"};
