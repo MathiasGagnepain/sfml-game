@@ -84,6 +84,16 @@ class Enemy: public Character
             this->xPosition = this->originalXPosition;
         }
 
+        void setPosition(float x, float y){
+            this->xPosition = x;
+            this->yPosition = y;
+        }
+
+        array<float, 2> getPosition(){
+            array<float, 2> position = {this->xPosition, this->yPosition};
+            return position;
+        }
+
     private:
         sf::Texture enemyTexture;
         sf::Sprite enemySprite;

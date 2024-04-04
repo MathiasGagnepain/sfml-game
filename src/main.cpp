@@ -14,11 +14,10 @@ using namespace std;
 #include "class/characters/Player.cc"
 #include "class/characters/Enemy.cc"
 #include "class/display/Text.cc"
-#include "class/items/Item.cc"
-#include "class/items/Collectable.cc"
-#include "class/items/Weapon.cc"
 
 #include "includes/main.hpp"
+
+#include "class/Game.cc"
 
 int main()
 {
@@ -64,8 +63,8 @@ int main()
     Player player("Sticky");
     Weapon weapon(1, 10, false, 300, 500), shield(2, 5, true, 400, 500);
     Text text;
+    Game game;
 
-    Collectable collectable1(1), collectable2(2), collectable3(3), collectable4(4);
 
     bool gameIsStarted = false;
     bool gameIsPaused = false;
@@ -92,13 +91,10 @@ int main()
                 player.levelEnded = false;
                 player.resetPosition();
                 player.healthPoints = 100;
-                collectable1.resetCollectable();
-                collectable2.resetCollectable();
-                collectable3.resetCollectable();
-                collectable4.resetCollectable();
                 weapon.resetWeapon();
                 shield.resetWeapon();
                 enemy.resetEnemy();
+                game.resetGame();
             }
         }
         if (gameIsStarted && !player.levelEnded && player.healthPoints > 0) {
@@ -129,6 +125,8 @@ int main()
         }
 
         window.clear();
+
+        game.moveScenery(window, platform, player, enemy, levelEnd);
         
         player.physics(ground, platform, levelEnd);
 
@@ -141,12 +139,9 @@ int main()
 
         player.drawHealthBar(window);
 
-        player.drawPlayer(window, platform);
+        player.drawPlayer(window);
 
-        collectable1.drawCollectable(700, 425, window, player);
-        collectable2.drawCollectable(775, 425, window, player);
-        collectable3.drawCollectable(850, 425, window, player);
-        collectable4.drawCollectable(950, 425, window, player);
+        game.drawGame(window, player);
 
         enemy.drawEnemy(window, player);
         weapon.drawWeapon(window, player);

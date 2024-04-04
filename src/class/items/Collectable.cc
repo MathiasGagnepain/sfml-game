@@ -13,8 +13,10 @@ class Collectable: public Item
         bool isResetter;
         int type;
 
-        Collectable(int type){
+        Collectable(int type, float x, float y){
             this->type = type;
+            this->xPosition = x;
+            this->yPosition = y;
 
             this->collectable1Texture.loadFromFile(COLLECTABLE1);
             this->collectable2Texture.loadFromFile(COLLECTABLE2);
@@ -38,7 +40,7 @@ class Collectable: public Item
             player.setScore(this->score);
         }
 
-        void drawCollectable(float x, float y, sf::RenderWindow &window, Player &player){
+        void drawCollectable(sf::RenderWindow &window, Player &player){
 
             switch (this->type)
             {   
@@ -58,7 +60,7 @@ class Collectable: public Item
                     break;
             }
             this->collectable.setScale(.1f,.1f);
-            this->collectable.setPosition(x, y);
+            this->collectable.setPosition(this->xPosition, this->yPosition);
 
             collideWithPlayer(player);
 
@@ -80,7 +82,17 @@ class Collectable: public Item
             this->collectable.setColor(sf::Color::White);
         }
 
+        void setPosition(float x, float y){
+            this->xPosition = x;
+            this->yPosition = y;
+        }
+
+        array<float, 2> getPosition(){
+            return {this->xPosition, this->yPosition};
+        }
+
     private:
         sf::Texture collectable1Texture, collectable2Texture, collectable3Texture, collectable4Texture;
         sf::Sprite collectable;
+        float xPosition, yPosition;
 };
