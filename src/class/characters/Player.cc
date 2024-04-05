@@ -1,5 +1,6 @@
 #include <string>
 #include <iostream>
+#include <array>
 #include "Player.hpp"
 
 using namespace std;
@@ -180,6 +181,68 @@ void  Player::selectSlot(){
     } else {
         this->selectedSlot = 0;
     }
+}
+
+array<float, 2> Player::getPosition(){
+    return {this->xPosition, this->yPosition};
+}
+
+void Player::setPosition(float x, float y){
+    this->xPosition = x;
+    this->yPosition = y;
+}
+
+int Player::getInventory(int index){
+    return this->inventory[index];
+}
+
+void Player::setInventory(int index, int value){
+    this->inventory[index] = value;
+}
+
+array<float, 2> Player::getVelocity(){
+    return {this->xVelocity, this->yVelocity};
+}
+
+sf::Sprite Player::getPlayerSprite(){
+    return this->playerSprite;
+}
+
+void Player::setLevelEnd(bool levelEnd){
+    this->levelEnded = levelEnd;
+}
+
+void Player::setHealthPoints(int healthPoints){
+    this->healthPoints = healthPoints;
+}
+
+int Player::getHealthPoints(){
+    return this->healthPoints;
+}
+
+void Player::setIsJumping(bool isJumping){
+    this->isJumping = isJumping;
+}
+
+bool Player::getIsJumping(){
+    return this->isJumping;
+}
+
+bool Player::getLevelEnd(){
+    return this->levelEnded;
+}
+
+void Player::setVelocity(float x, float y){
+    this->xVelocity = x;
+    this->yVelocity = y;
+}
+
+bool Player::getIsCrouching(){
+    return this->isCrouching;
+}
+
+void Player::setIsCrouching(bool isCrouching){
+    this->isCrouching = isCrouching;
 }
 
 //  ╔══════════════════════════════════════════════════════════════════════════════╗

@@ -53,7 +53,7 @@ int main()
             if(!gameIsStarted){
                 gameIsStarted = true;
             }
-            else if (game.getPlayer()->levelEnded or game.getPlayer()->healthPoints <= 0){
+            else if (game.getPlayer()->getLevelEnd() or game.getPlayer()->getHealthPoints() <= 0){
                 gameIsStarted = false;
                 weapon.resetWeapon();
                 shield.resetWeapon();
@@ -61,7 +61,7 @@ int main()
                 game.resetGame();
             }
         }
-        if (gameIsStarted && !game.getPlayer()->levelEnded && game.getPlayer()->healthPoints > 0) {
+        if (gameIsStarted && !game.getPlayer()->getLevelEnd() && game.getPlayer()->getHealthPoints() > 0) {
             if(sf::Keyboard::isKeyPressed(sf::Keyboard::P) && keypressedCooldown.asSeconds() >= .5f){
                 keypressedClock.restart();
                 gameIsPaused = !gameIsPaused;
@@ -74,10 +74,10 @@ int main()
                 if(sf::Keyboard::isKeyPressed(sf::Keyboard::Left) || sf::Keyboard::isKeyPressed(sf::Keyboard::Q)){
                     game.getPlayer()->moveLeft();
                 }
-                if((sf::Keyboard::isKeyPressed(sf::Keyboard::Up) || sf::Keyboard::isKeyPressed(sf::Keyboard::Z)) && !game.getPlayer()->isJumping && game.getPlayer()->getJumpCooldown().asSeconds() >= .5f){
+                if((sf::Keyboard::isKeyPressed(sf::Keyboard::Up) || sf::Keyboard::isKeyPressed(sf::Keyboard::Z)) && !game.getPlayer()->getIsJumping() && game.getPlayer()->getJumpCooldown().asSeconds() >= .5f){
                     game.getPlayer()->jump();
                 }
-                if((sf::Keyboard::isKeyPressed(sf::Keyboard::Down) || sf::Keyboard::isKeyPressed(sf::Keyboard::S)) && game.getPlayer()->yPosition < game.getGroundPosition()[1] - 20){
+                if((sf::Keyboard::isKeyPressed(sf::Keyboard::Down) || sf::Keyboard::isKeyPressed(sf::Keyboard::S)) && game.getPlayer()->getPosition()[1] < game.getGroundPosition()[1] - 20){
                     game.getPlayer()->crouch(game.getGround());
                 }
                 if(sf::Keyboard::isKeyPressed(sf::Keyboard::F) && keypressedCooldown.asSeconds() >= .5f){
@@ -103,19 +103,18 @@ int main()
         // Text
         if(!gameIsStarted){
             window.draw(text.getStartingText());
-        } else if (game.getPlayer()->levelEnded) {
+        } else if (game.getPlayer()->getLevelEnd()) {
             window.draw(text.getGameEndedText());
         }
         if(gameIsPaused){
            window.draw(text.getPausedText());
         }
-        if(game.getPlayer()->healthPoints <= 0){
+        if(game.getPlayer()->getHealthPoints() <= 0){
             window.draw(text.getGameOverText());
-            game.getPlayer()->xVelocity = 0;
-            game.getPlayer()->yVelocity = 0;
+            game.getPlayer()->setVelocity(0, 0);
         }
-        if (game.getPlayer()->isCrouching) {
-            game.getPlayer()->isCrouching = false;
+        if (game.getPlayer()->getIsCrouching()) {
+            game.getPlayer()->setIsCrouching(false);
         }
         
         window.display();

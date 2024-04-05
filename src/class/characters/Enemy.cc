@@ -41,7 +41,7 @@ void Enemy::drawEnemy(sf::RenderWindow &window, Player* player){
     }
     if (this->healthPoints > 0) {
 
-        if (player->xPosition < this->xPosition) {
+        if (player->getPosition()[0] < this->xPosition) {
             this->enemyTexture.loadFromFile(ENEMY_IDLE_LEFT[this->animationIndex]);
         }
         else {
@@ -89,7 +89,7 @@ int Enemy::getKnockBack(){
 
 void Enemy::attack(Player* player){
 
-    if (player->inventory[player->selectedSlot] == 1) {
+    if (player->getInventory(player->getSelectedSlot()) == 1) {
         if (this->originalXPosition == this->xPosition){
             this->originalXPosition = this->xPosition;
         }
@@ -98,7 +98,7 @@ void Enemy::attack(Player* player){
             player->setScore(player->getScore() + 100);
         }
     }
-    player->xVelocity > 0 ? this->xPosition += this->knockBack/4 : this->xPosition -= this->knockBack/4;
+    player->getVelocity()[0] > 0 ? this->xPosition += this->knockBack/4 : this->xPosition -= this->knockBack/4;
 }
 
 int Enemy::getDamage(){
