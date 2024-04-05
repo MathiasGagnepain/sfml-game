@@ -1,9 +1,12 @@
 #pragma once
 
+#include <SFML/Graphics.hpp>
 #include <string>
 #include <iostream>
+#include "Character.cc"
 
 using namespace std;
+
 
 class Enemy: public Character
 {

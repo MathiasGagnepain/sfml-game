@@ -2,6 +2,7 @@
 
 #include <string>
 #include <iostream>
+#include "Character.cc"
 
 using namespace std;
 
