@@ -33,35 +33,35 @@ Game::Game(){
 }
 
 void Game::moveScenery(){
-    if ( (this->player->xVelocity != 0 && this->player->xPosition + this->player->xVelocity >= 500 - this->player->playerSprite.getTexture()->getSize().x * this->player->playerSprite.getScale().x) || (this->player->xVelocity != 0 && this->offsetX > 0 )){
+    if ( (this->player->getVelocity()[0] != 0 && this->player->getPosition()[0] + this->player->getVelocity()[0] >= 500 - this->player->getPlayerSprite().getTexture()->getSize().x * this->player->getPlayerSprite().getScale().x) || (this->player->getVelocity()[0] != 0 && this->offsetX > 0 )){
         
-        if ((this->offsetX + SCREEN_WIDTH < this->levelSize && this->player->xVelocity > 0) || (this->offsetX > 0 && this->player->xVelocity < 0 && this->player->xPosition + this->player->xVelocity <= 500 - this->player->playerSprite.getTexture()->getSize().x * this->player->playerSprite.getScale().x)){
-            this->player->xPosition = 500 - this->player->playerSprite.getTexture()->getSize().x * this->player->playerSprite.getScale().x;
-            this->platform->setPosition(this->platform->getPosition()[0] - this->player->xVelocity, this->platform->getPosition()[1]);
-            this->enemy->setPosition(this->enemy->getPosition()[0] - this->player->xVelocity, this->enemy->getPosition()[1]);
-            this->levelEnd.setPosition(this->levelEnd.getPosition().x - this->player->xVelocity, this->levelEnd.getPosition().y);
+        if ((this->offsetX + SCREEN_WIDTH < this->levelSize && this->player->getVelocity()[0] > 0) || (this->offsetX > 0 && this->player->getVelocity()[0] < 0 && this->player->getPosition()[0] + this->player->getVelocity()[0] <= 500 - this->player->getPlayerSprite().getTexture()->getSize().x * this->player->getPlayerSprite().getScale().x)){
+            this->player->setPosition(500 - this->player->getPlayerSprite().getTexture()->getSize().x * this->player->getPlayerSprite().getScale().x, this->player->getPosition()[1]);
+            this->platform->setPosition(this->platform->getPosition()[0] - this->player->getVelocity()[0], this->platform->getPosition()[1]);
+            this->enemy->setPosition(this->enemy->getPosition()[0] - this->player->getVelocity()[0], this->enemy->getPosition()[1]);
+            this->levelEnd.setPosition(this->levelEnd.getPosition().x - this->player->getVelocity()[0], this->levelEnd.getPosition().y);
 
-            this->collectable1->setPosition(this->collectable1->getPosition()[0] - this->player->xVelocity, this->collectable1->getPosition()[1]);
-            this->collectable2->setPosition(this->collectable2->getPosition()[0] - this->player->xVelocity, this->collectable2->getPosition()[1]);
-            this->collectable3->setPosition(this->collectable3->getPosition()[0] - this->player->xVelocity, this->collectable3->getPosition()[1]);
-            this->collectable4->setPosition(this->collectable4->getPosition()[0] - this->player->xVelocity, this->collectable4->getPosition()[1]);
+            this->collectable1->setPosition(this->collectable1->getPosition()[0] - this->player->getVelocity()[0], this->collectable1->getPosition()[1]);
+            this->collectable2->setPosition(this->collectable2->getPosition()[0] - this->player->getVelocity()[0], this->collectable2->getPosition()[1]);
+            this->collectable3->setPosition(this->collectable3->getPosition()[0] - this->player->getVelocity()[0], this->collectable3->getPosition()[1]);
+            this->collectable4->setPosition(this->collectable4->getPosition()[0] - this->player->getVelocity()[0], this->collectable4->getPosition()[1]);
 
-            this->offsetX += this->player->xVelocity;
-            this->enemy->setOriginalXPosition(this->enemy->getOriginalXPosition() - this->player->xVelocity);
+            this->offsetX += this->player->getVelocity()[0];
+            this->enemy->setOriginalXPosition(this->enemy->getOriginalXPosition() - this->player->getVelocity()[0]);
         }
-    } else if (this->player->xPosition <= 0) {
-        this->player->xPosition = 0;
-    } else if (this->player->xPosition + this->player->playerSprite.getTexture()->getSize().x * this->player->playerSprite.getScale().x >= SCREEN_WIDTH) {
-        this->player->xPosition = SCREEN_WIDTH - this->player->playerSprite.getTexture()->getSize().x * this->player->playerSprite.getScale().x;
+    } else if (this->player->getPosition()[0] <= 0) {
+        this->player->setPosition(0, this->player->getPosition()[1]);
+    } else if (this->player->getPosition()[0] + this->player->getPlayerSprite().getTexture()->getSize().x * this->player->getPlayerSprite().getScale().x >= SCREEN_WIDTH) {
+        this->player->setPosition(SCREEN_WIDTH - this->player->getPlayerSprite().getTexture()->getSize().x * this->player->getPlayerSprite().getScale().x, this->player->getPosition()[1]);
     }
     this->player->physics(this->ground, this->platform, this->levelEnd);
 }
 
 void Game::resetGame(){
     // gameIsStarted = false;
-    this->player->levelEnded = false;
+    this->player->setLevelEnd(false);
     this->player->resetPosition();
-    this->player->healthPoints = 100;
+    this->player->setHealthPoints(100);
     // weapon.resetWeapon();
     // shield.resetWeapon();
     this->enemy->resetEnemy();
@@ -81,7 +81,7 @@ void Game::resetGame(){
     this->collectable4->setPosition(950, 425);
     this->offsetX = 0;
 
-    this->player->isJumping = false;
+    this->player->setIsJumping(false);
 }
 
 array<float, 2> Game::getGroundPosition(){
@@ -128,11 +128,11 @@ void Game::drawGame(sf::RenderWindow &window){
 
 void Game::playerCollide(){
     if(this->enemy->getEnemySprite().getGlobalBounds().intersects(this->player->getGlobalBounds())){
-        if (this->player->inventory[this->player->selectedSlot] != 2) {
-            this->player->healthPoints -= this->enemy->getDamage();
+        if (this->player->getInventory(this->player->getSelectedSlot()) != 2) {
+            this->player->setHealthPoints(this->player->getHealthPoints() - this->enemy->getDamage());
             this->enemy->attack(this->player);
         }
-        this->player->xVelocity > 0 && this->offsetX <= 0 ? this->player->xPosition -= this->enemy->getKnockBack() : this->player->xPosition += this->enemy->getKnockBack();
-        this->player->xVelocity > 0 && this->offsetX > 0 ? this->offsetX - this->enemy->getKnockBack() : this->offsetX + this->enemy->getKnockBack();
+        this->player->getVelocity()[0] > 0 && this->offsetX <= 0 ? this->player->getPosition()[0] -= this->enemy->getKnockBack() : this->player->getPosition()[0] += this->enemy->getKnockBack();
+        this->player->getVelocity()[0] > 0 && this->offsetX > 0 ? this->offsetX - this->enemy->getKnockBack() : this->offsetX + this->enemy->getKnockBack();
     }
 }

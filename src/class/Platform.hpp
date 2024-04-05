@@ -13,7 +13,6 @@ class Platform
         float posX, posY;
 
     public:
-    
         /*
         * Constructor
         * @param path: string

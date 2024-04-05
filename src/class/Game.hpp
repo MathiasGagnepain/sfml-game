@@ -23,7 +23,6 @@ class Game
         float platformsPosition[2][2] = {{700.0f, 480.0f}, {800.0f, 550.0f}}; // TODO: Not implemented yet
 
     public:
-
         /*
         * Constructor
         */

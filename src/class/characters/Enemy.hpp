@@ -1,9 +1,12 @@
 #pragma once
 
+#include <SFML/Graphics.hpp>
 #include <string>
 #include <iostream>
+#include "Character.cc"
 
 using namespace std;
+
 
 class Enemy: public Character
 {
@@ -16,14 +19,13 @@ class Enemy: public Character
         float originalXPosition = 0;
         int animationIndex = 0;
         int healthPoints;
+         // 1 : Fighter, 2 : Warrior, 3 : Ranger
+        int type;
 
         sf::Clock animationClock;
         sf::Time animationCooldown;
 
     public:
-        // 1 : Fighter, 2 : Warrior, 3 : Ranger
-        int type;
-
         /*
         * Constructor for the Enemy class
         * @param x : x position of the enemy

@@ -35,10 +35,10 @@ void Weapon::drawWeapon(sf::RenderWindow &window, Player* player){
 
 void Weapon::playerCollide(Player* player){
     if(this->weaponSprite.getGlobalBounds().intersects(player->getGlobalBounds())){
-        if (player->inventory[0] != 0 && player->inventory[0] != this->id) {
-            player->inventory[1] = this->id;
+        if (player->getInventory(0) != 0 && player->getInventory(0) != this->id) {
+            player->setInventory(1, this->id);
         } else {
-            player->inventory[0] = this->id;
+            player->setInventory(0, this->id);
         }
         this->weaponSprite.setPosition(-100, -100);
         this->weaponSprite.setColor(sf::Color::Transparent);
