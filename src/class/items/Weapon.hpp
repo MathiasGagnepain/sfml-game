@@ -11,12 +11,12 @@ class Weapon: public Item
         sf::Texture weaponTexture;
         sf::Sprite weaponSprite;
 
-    public:
         int id;
         int damage;
         bool isDefense;
         float xPosition, yPosition;
 
+    public:
         /*
         * Constructor
         * @param id : the id of the weapon

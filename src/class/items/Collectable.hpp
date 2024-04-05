@@ -13,13 +13,13 @@ class Collectable : public Item
         sf::Texture collectable1Texture, collectable2Texture, collectable3Texture, collectable4Texture;
         sf::Sprite collectable;
         float xPosition, yPosition;
-
-    public:
         int score;
         bool isEat = false;
         bool isResetter;
         int type;
 
+
+    public:
         /*
         * Constructor
         * @param type : the type of the collectable

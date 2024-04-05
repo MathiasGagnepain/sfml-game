@@ -36,6 +36,7 @@ class Player: public Character
         void jumping();
 
     public:
+        // TODO: set this in private
         int inventory[2] = {0, 0};
         float xPosition = 20;
         float yPosition = 0;
